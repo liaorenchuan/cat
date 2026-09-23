@@ -2,6 +2,15 @@
 
 # cat
 
+2023112417、计算机科学与技术、廖仁川
+
+完成学业，简单学习
+
+
+
+
+
+
 **两个自托管的小项目 —— 一个桌宠聊天室，一个把手机变成键鼠的工具**
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
