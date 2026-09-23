@@ -1,0 +1,8 @@
+# 二进制文件：禁止行尾转换与 diff / merge 尝试
+*.png  binary
+*.ico  binary
+*.ttf  binary
+*.exe  binary
+*.db   binary
+
+# 行尾不做转换（core.autocrlf=false），文件按原样存储与检出

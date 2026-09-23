@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.PetPanel"
+             BackgroundColor="#FFEBD2">
+
+    <!-- 宠物小屋(对齐桌面 PetHouseView):素材宠物在活动区内站住眨眼 / 左右走动 / 做动作;
+         动作不再摆成按钮,而是**双击宠物**弹出呼出菜单(桌面右键菜单同款:比心/跪下/吃面/睡觉/走路/缩放/外出,
+         睡觉·走路·缩放是开关态);缩放宽 80-400,确定 = 本地持久化 + 云端同步 -->
+    <Grid RowDefinitions="Auto,*" Padding="12,10">
+
+        <!-- 顶部:小屋标题卡(操作都在呼出菜单里,这里只放提示) -->
+        <Border Grid.Row="0" Style="{StaticResource QpCard}" Padding="14,9" Margin="0,0,0,10">
+            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                <Label Text="🏡" FontSize="17" VerticalOptions="Center" />
+                <Label Text="蘑菇小屋" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource QpTitle}"
+                       VerticalOptions="Center" />
+                <Label Text="· 双击宠物打开菜单,按住可拖动" FontSize="11" TextColor="{StaticResource QpBrown}"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- ============ 宠物活动区:大白卡内自由走动(剪裁不出卡);呼出菜单/缩放条浮在卡上 ============ -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Margin="0,0,0,10" Padding="0">
+            <Grid>
+                <!-- 走动区:宠物 Image 锚左上,走动/缩放/拖拽用 Translation 移动;点宠物戳一下 / 双击开菜单 / 按住拖动 -->
+                <Grid x:Name="PetArea" BackgroundColor="Transparent" IsClippedToBounds="True">
+                    <!-- 手势都挂在整块活动区、而不是宠物身上:挂在宠物上时手指一滑出它(拖 200px 就会出界,
+                         宠物才 364px 宽)手势就被打断 —— 实测快速滑 200px 只走 96px。挂活动区后位移 1:1 跟手,
+                         只是起手会吃掉一个系统 touch slop(约 15px,和悬浮窗/桌面端同款手感)。
+                         另外:手势不能同时挂在宠物上 —— 子元素会把手势事件吃掉,父容器就再也收不到,
+                         所以"点的是不是宠物"改由 Tap 回调里的坐标自己判断(见 OnPetTapped)。 -->
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPetTapped" />
+                        <PanGestureRecognizer PanUpdated="OnPetPan" />
+                    </Grid.GestureRecognizers>
+                    <Image x:Name="PetImage" Source="pet.png" Aspect="AspectFill"
+                           HorizontalOptions="Start" VerticalOptions="Start" />
+                </Grid>
+
+                <!-- 缩放条(桌面 ScalePanel 同款:滑块 80-400 实时预览,确定 = 保存+上传云端,取消 = 还原) -->
+                <Border x:Name="ScaleUi" IsVisible="False" HorizontalOptions="Center" VerticalOptions="End"
+                        Margin="0,0,0,10" Padding="12,9"
+                        BackgroundColor="#FFFDF7" Stroke="#F0E0CC" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12" WidthRequest="280">
+                    <VerticalStackLayout Spacing="7">
+                        <Label x:Name="ScaleHintText" Text="拖动滑块调整大小" FontSize="11"
+                               TextColor="{StaticResource QpBrown}" HorizontalTextAlignment="Center" />
+                        <Slider x:Name="SizeSlider" Minimum="80" Maximum="400"
+                                ValueChanged="OnSizeSliderChanged" />
+                        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                            <Label x:Name="SizeText" Text="200 px" FontSize="13" FontAttributes="Bold"
+                                   TextColor="#C4702F" MinimumWidthRequest="64"
+                                   HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                            <Button Text="确定" Clicked="OnScaleOkClicked" FontSize="12"
+                                    HeightRequest="30" Padding="16,0" CornerRadius="15"
+                                    BackgroundColor="#FF8C42" TextColor="White" />
+                            <Button Text="取消" Clicked="OnScaleCancelClicked" FontSize="12"
+                                    HeightRequest="30" Padding="16,0" CornerRadius="15"
+                                    BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- 菜单遮罩:点菜单以外的任何地方 = 收起菜单(必须排在菜单前面,否则盖住菜单点不动) -->
+                <Grid x:Name="MenuScrim" IsVisible="False" BackgroundColor="Transparent">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMenuScrimTapped" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+
+                <!-- 呼出菜单(双击宠物弹出;贴着宠物旁边摆,不压住它;开关态文字随状态切换) -->
+                <Border x:Name="PetMenu" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start"
+                        Padding="6" BackgroundColor="#FFFDF7" Stroke="#F0E0CC" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="2">
+                        <Button Text="❤ 比心" Style="{StaticResource QpMenuBtn}" Clicked="OnHeartClicked" />
+                        <Button Text="🙏 跪下" Style="{StaticResource QpMenuBtn}" Clicked="OnKneelClicked" />
+                        <Button Text="🍜 吃面" Style="{StaticResource QpMenuBtn}" Clicked="OnEatClicked" />
+                        <Button x:Name="MenuSleepBtn" Text="😴 睡觉" Style="{StaticResource QpMenuBtn}"
+                                Clicked="OnSleepClicked" />
+                        <Button x:Name="MenuWalkBtn" Text="🚶 走路" Style="{StaticResource QpMenuBtn}"
+                                Clicked="OnWalkClicked" />
+                        <Button x:Name="MenuScaleBtn" Text="🔍 缩放" Style="{StaticResource QpMenuBtn}"
+                                Clicked="OnScaleClicked" />
+                        <Button x:Name="MenuOutBtn" Text="🚀 外出" Style="{StaticResource QpMenuBtn}"
+                                Clicked="OnGoOutClicked" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+
+</ContentView>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:QPet.Mobile.Views"
+             x:Class="QPet.Mobile.MainPage"
+             Title="Q版桌宠"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 主界面(对齐桌面 ChatView):内容区 + 底部页签;登录后进入,页签在四个面板间切换 -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="{StaticResource QpBg}" Offset="0" />
+            <GradientStop Color="{StaticResource QpBgEnd}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- ============ 内容区:顶部提示条 + 消息 / 好友 / 群聊 / 宠物 四面板叠放 ============ -->
+        <Grid Grid.Row="0" RowDefinitions="Auto,*">
+            <!-- 顶部轻提示:申请/邀请处理结果等(同连接横幅视觉;3 秒自动隐藏,ShowHint 控制) -->
+            <Border x:Name="HintBanner" IsVisible="False" Margin="12,6,12,0"
+                    BackgroundColor="#FFF3E0" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8" Padding="10,6">
+                <Label x:Name="HintText" Text="" FontSize="11" LineBreakMode="WordWrap" />
+            </Border>
+            <Grid Grid.Row="1">
+                <views:ConvPanel x:Name="ConvHost" IsVisible="True" />
+                <views:FriendPanel x:Name="FriendHost" IsVisible="False" />
+                <views:GroupPanel x:Name="GroupHost" IsVisible="False" />
+                <views:PetPanel x:Name="PetHost" IsVisible="False" />
+            </Grid>
+        </Grid>
+
+        <!-- ============ 底部页签(白色卡片 + 四等分,选中胶囊高亮;右上红点徽章 = 各页待办) ============ -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Padding="4" Margin="12,8,12,8">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <!-- 消息页签:徽章 = 会话未读总和 -->
+                <Grid Grid.Column="0" Margin="2">
+                    <Button x:Name="TabMsgButton" Text="💬 消息" Clicked="OnTabMsgClicked"
+                            CornerRadius="12" FontSize="13" />
+                    <Border x:Name="MsgBadge" HorizontalOptions="End" VerticalOptions="Start"
+                            BackgroundColor="{StaticResource QpError}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8" Padding="4,1" MinimumWidthRequest="16"
+                            InputTransparent="True" IsVisible="False" Margin="0,1,1,0">
+                        <Label x:Name="MsgBadgeText" FontSize="9" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+                <!-- 好友页签:徽章 = 好友申请数 -->
+                <Grid Grid.Column="1" Margin="2">
+                    <Button x:Name="TabFriendButton" Text="👤 好友" Clicked="OnTabFriendClicked"
+                            CornerRadius="12" FontSize="13" />
+                    <Border x:Name="FriendBadge" HorizontalOptions="End" VerticalOptions="Start"
+                            BackgroundColor="{StaticResource QpError}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8" Padding="4,1" MinimumWidthRequest="16"
+                            InputTransparent="True" IsVisible="False" Margin="0,1,1,0">
+                        <Label x:Name="FriendBadgeText" FontSize="9" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+                <!-- 群聊页签:徽章 = 群申请 + 群邀请 -->
+                <Grid Grid.Column="2" Margin="2">
+                    <Button x:Name="TabGroupButton" Text="👥 群聊" Clicked="OnTabGroupClicked"
+                            CornerRadius="12" FontSize="13" />
+                    <Border x:Name="GroupBadge" HorizontalOptions="End" VerticalOptions="Start"
+                            BackgroundColor="{StaticResource QpError}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8" Padding="4,1" MinimumWidthRequest="16"
+                            InputTransparent="True" IsVisible="False" Margin="0,1,1,0">
+                        <Label x:Name="GroupBadgeText" FontSize="9" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="3" Margin="2">
+                    <Button x:Name="TabPetButton" Text="🍄 宠物" Clicked="OnTabPetClicked"
+                            CornerRadius="12" FontSize="13" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+
+</ContentPage>

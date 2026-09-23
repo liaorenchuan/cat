@@ -1,0 +1,19 @@
+<Window x:Class="QPet.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Q版桌宠"
+        Icon="/Assets/mushroom.ico"
+        Width="1120" Height="720"
+        MinWidth="820" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+
+    <!-- 主窗口(壳):单一窗口内切换 登录 / 聊天 两个视图(聊天界面含消息/好友/群聊/宠物小屋四页签) -->
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="{StaticResource UiAppBgTopColor}" Offset="0" />
+            <GradientStop Color="{StaticResource UiAppBgColor}" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <ContentControl x:Name="RootContent" />
+</Window>

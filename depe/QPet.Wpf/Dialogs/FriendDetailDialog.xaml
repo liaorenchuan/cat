@@ -1,0 +1,52 @@
+<Window x:Class="QPet.Wpf.Dialogs.FriendDetailDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="好友详情" Width="380" Height="470"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        ShowInTaskbar="False" Background="{StaticResource UiDialogBg}">
+
+    <DockPanel Margin="16">
+        <!-- 头部:头像 + 昵称 + 在线状态 -->
+        <Border DockPanel.Dock="Top" Background="{StaticResource UiCardBg}" CornerRadius="12" Padding="14"
+                BorderBrush="{StaticResource WarmCardBorder}" BorderThickness="1" Margin="0,0,0,12">
+            <StackPanel>
+                <Border x:Name="AvatarText" Width="64" Height="64" CornerRadius="32"
+                        Background="{StaticResource WarmSurfacePressed}" HorizontalAlignment="Center">
+                    <TextBlock FontSize="26" FontWeight="Bold" Foreground="{StaticResource WarmSecondary}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <TextBlock x:Name="NameText" FontSize="17" FontWeight="Bold" Foreground="{StaticResource WarmText}"
+                           HorizontalAlignment="Center" Margin="0,10,0,0" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                    <Ellipse x:Name="OnlineDot" Width="8" Height="8" VerticalAlignment="Center" />
+                    <TextBlock x:Name="OnlineText" FontSize="11" Foreground="{StaticResource UiBrown}" Margin="5,0,0,0" />
+                </StackPanel>
+                <TextBlock x:Name="AccountText" FontSize="11" Foreground="{StaticResource UiBrown}"
+                           HorizontalAlignment="Center" Margin="0,6,0,0" Text="账号: 加载中…" />
+            </StackPanel>
+        </Border>
+
+        <!-- 备注:改本地+服务器(双方可见) -->
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource SectionTitle}" Text="● 备注" Margin="0,0,0,6" />
+            <DockPanel Margin="0,0,0,4">
+                <Button DockPanel.Dock="Right" Style="{StaticResource SecondaryButton}"
+                        Content="保存备注" Width="80" Margin="8,0,0,0" Click="OnSaveRemark" />
+                <TextBox x:Name="RemarkBox" FontSize="13" Height="32" Padding="6,4"
+                         VerticalContentAlignment="Center" MaxLength="20" />
+            </DockPanel>
+            <TextBlock Text="备注只有自己可见,修改后好友列表与消息页都会用备注名。" FontSize="10"
+                       Foreground="{StaticResource UiBrownText}" Margin="0,0,0,10" />
+        </StackPanel>
+
+        <!-- 操作按钮 -->
+        <StackPanel DockPanel.Dock="Bottom">
+            <Button Style="{StaticResource PrimaryButton}" Content="💬 发消息" FontSize="14"
+                    Padding="0,10" Click="OnOpenChat" />
+            <Button Style="{StaticResource SecondaryButton}" Content="✂ 删除好友"
+                    Foreground="{StaticResource WarmError}" Margin="0,8,0,0" Padding="0,8" Click="OnDeleteFriend" />
+            <TextBlock x:Name="ErrorText" FontSize="11" Foreground="{StaticResource WarmError}"
+                       TextWrapping="Wrap" Margin="0,8,0,0" />
+        </StackPanel>
+    </DockPanel>
+</Window>

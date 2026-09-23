@@ -1,0 +1,52 @@
+<Window x:Class="QPet.Wpf.Windows.PetFloatingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Q版桌宠"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        Loaded="OnWindowLoaded">
+
+    <Grid x:Name="RootGrid" Background="Transparent">
+        <!-- 桌宠角色:沿屏幕底部走动,左键拖拽拎起 -->
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Image x:Name="PetImage"
+                   Width="200" Height="200"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <!-- 走左时 ScaleX=-1 镜像翻转,以宠物中心为轴 -->
+                        <ScaleTransform x:Name="PetScale" ScaleX="1" ScaleY="1" CenterX="100" CenterY="100" />
+                        <TranslateTransform x:Name="PetWalk" X="0" Y="0" />
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
+
+        <!-- 右键菜单:手写 Popup,避免透明窗口上 WPF ContextMenu 的渲染问题;
+             样式与屋内(宠物小屋)右键菜单一致:白卡片 + 浅橙按钮 -->
+        <Popup x:Name="MenuPopup"
+               Placement="MousePoint"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+            <Border Style="{StaticResource Card}" Background="White" Padding="6" MinWidth="132">
+                <StackPanel>
+                    <Button Style="{StaticResource ActionButton}" Content="🏠 回家" Margin="0,0,0,4" Click="OnGoHome" />
+                    <Border Height="1" Background="{StaticResource WarmCardBorder}" Margin="0,0,0,4" />
+                    <Button Style="{StaticResource ActionButton}" Content="❤ 比心" Margin="0,0,0,4" Click="OnHeart" />
+                    <Button Style="{StaticResource ActionButton}" Content="🙏 跪下" Margin="0,0,0,4" Click="OnKneel" />
+                    <Button Style="{StaticResource ActionButton}" Content="🍜 吃面" Margin="0,0,0,4" Click="OnEat" />
+                    <Button x:Name="SleepButton" Style="{StaticResource ActionButton}" Content="😴 睡觉" Margin="0,0,0,4" Click="OnSleep" />
+                    <Button Style="{StaticResource ActionButton}" Content="🚶 走路" Margin="0,0,0,4" Click="OnWalk" />
+                    <Border Height="1" Background="{StaticResource WarmCardBorder}" Margin="0,4,0,4" />
+                    <Button Style="{StaticResource ActionButton}" Content="🚪 退出桌宠" Click="OnExit" />
+                </StackPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</Window>

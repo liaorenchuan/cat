@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.ChatPage"
+             BackgroundColor="#FFFDF9">
+
+    <!-- 聊天详情页(对齐桌面聊天窗):会话头(操作按钮组)+ 消息区(日期栏/已读标/主页卡)+ 输入条(emoji 面板/状态条) -->
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnRootTapped" />
+        </Grid.GestureRecognizers>
+
+        <!-- ============ 会话头:状态点 + 标题 + 副行/操作按钮组 ============ -->
+        <Border Grid.Row="0" BackgroundColor="White" Padding="14,9"
+                Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                StrokeShape="RoundRectangle 0 0 16 16">
+            <Grid RowDefinitions="Auto,Auto" RowSpacing="3">
+                <HorizontalStackLayout Spacing="8">
+                    <!-- 单聊:对方在线状态点;群聊隐藏 -->
+                    <Ellipse x:Name="HeadDot" WidthRequest="10" HeightRequest="10"
+                             Fill="{StaticResource QpGreen}" VerticalOptions="Center" IsVisible="False" />
+                    <Label x:Name="HeadTitle" FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource QpText}" LineBreakMode="TailTruncation"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,2,0,0">
+                    <Label x:Name="HeadSub" FontSize="11" TextColor="{StaticResource QpBrown}"
+                           VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                    <!-- 私聊动作:改备注 / 删除好友 -->
+                    <HorizontalStackLayout Grid.Column="1" x:Name="PrivActions" Spacing="6"
+                                           VerticalOptions="Center" IsVisible="False">
+                        <Button Text="✏ 备注" Clicked="OnRemarkClicked" FontSize="11"
+                                HeightRequest="28" Padding="10,0" CornerRadius="14"
+                                BackgroundColor="{StaticResource QpOrangePale}" TextColor="{StaticResource QpTitle}" />
+                        <Button Text="✂ 删除好友" Clicked="OnDeleteFriendClicked" FontSize="11"
+                                HeightRequest="28" Padding="10,0" CornerRadius="14"
+                                BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                    </HorizontalStackLayout>
+                    <!-- 群聊动作:退群 / 成员 / 改名 / 群备注(桌面 ChatView 头部按钮序同款;
+                         公共群无退群改名备注按钮,见 RefreshHeader) -->
+                    <HorizontalStackLayout Grid.Column="1" x:Name="GroupActions" Spacing="6"
+                                           VerticalOptions="Center" IsVisible="False">
+                        <Button x:Name="QuitGroupButton" Text="🚪 退群" Clicked="OnQuitGroupClicked" FontSize="11"
+                                HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                        <Button Text="👥 成员" Clicked="OnMembersClicked" FontSize="11"
+                                HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                BackgroundColor="#E5F6E0" TextColor="#4E9556" />
+                        <Button x:Name="RenameGroupButton" Text="✏ 改名" Clicked="OnRenameGroupClicked" FontSize="11"
+                                HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                BackgroundColor="{StaticResource QpOrangePale}" TextColor="{StaticResource QpTitle}" />
+                        <Button x:Name="GroupRemarkButton" Text="✏ 备注" Clicked="OnGroupRemarkClicked" FontSize="11"
+                                HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                BackgroundColor="{StaticResource QpOrangePale}" TextColor="{StaticResource QpTitle}" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ============ 消息区:日期分组条 / 系统行 / 双方气泡 ============ -->
+        <CollectionView Grid.Row="1" x:Name="MsgList" Margin="12,8" Scrolled="OnMsgListScrolled"
+                        ItemsUpdatingScrollMode="KeepLastItemInView" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0,4">
+                        <!-- 行手势:点消息区空白收起输入法 -->
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnMsgRowTapped" />
+                        </Grid.GestureRecognizers>
+
+                        <!-- 日期分组条:短线夹字,对齐桌面 ChatView 日期栏 -->
+                        <HorizontalStackLayout IsVisible="{Binding IsDateBar}" Spacing="12"
+                                               HorizontalOptions="Center" VerticalOptions="Center" Padding="0,8">
+                            <BoxView WidthRequest="36" HeightRequest="1" Color="#EBDCC6"
+                                     VerticalOptions="Center" />
+                            <Label Text="{Binding Text}" FontSize="10" TextColor="#B08A62"
+                                   VerticalOptions="Center" />
+                            <BoxView WidthRequest="36" HeightRequest="1" Color="#EBDCC6"
+                                     VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <!-- 系统消息:整行居中灰字 -->
+                        <Label IsVisible="{Binding IsSystem}" Text="{Binding Text}" FontSize="11"
+                               TextColor="{StaticResource QpBrown}" HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Margin="24,2" />
+
+                        <!-- 对方消息:头像(可点,私聊叠对方在线点)+ 昵称/气泡/时间 -->
+                        <Grid IsVisible="{Binding IsLeft}" ColumnDefinitions="Auto,*" Padding="0,2">
+                            <!-- 头像:私聊叠对方状态点(绿=在线,灰=离线/断网);点头像弹用户主页卡 -->
+                            <Grid Grid.Column="0" WidthRequest="42" HeightRequest="42"
+                                  VerticalOptions="Start" Margin="0,0,8,0">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAvatarTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Border WidthRequest="38" HeightRequest="38" StrokeShape="RoundRectangle 19"
+                                        BackgroundColor="{Binding AvatarBg}"
+                                        VerticalOptions="Start">
+                                    <Label Text="{Binding AvatarChar}" FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpBrown}"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Ellipse WidthRequest="10" HeightRequest="10" Fill="{Binding AvatarDotBrush}"
+                                         Stroke="White" StrokeThickness="2"
+                                         HorizontalOptions="End" VerticalOptions="End"
+                                         IsVisible="{Binding AvatarDotVisible}" />
+                            </Grid>
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Start">
+                                <Label Text="{Binding Name}" FontSize="11" TextColor="{StaticResource QpBrown}"
+                                       IsVisible="{Binding ShowName}" />
+                                <Border MaximumWidthRequest="280" HorizontalOptions="Start"
+                                        BackgroundColor="White" Stroke="#F3D8BC" StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 14" Padding="12,8">
+                                    <Label Text="{Binding Text}" FontSize="15" TextColor="{StaticResource QpText}"
+                                           LineBreakMode="WordWrap" />
+                                </Border>
+                                <Label Text="{Binding Time}" FontSize="9" TextColor="{StaticResource QpBrownText}"
+                                       HorizontalOptions="Start" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- 我的消息:头像右 + 浅杏橙气泡 + 时间/已读标 -->
+                        <Grid IsVisible="{Binding IsRight}" ColumnDefinitions="*,Auto" Padding="0,2">
+                            <VerticalStackLayout Grid.Column="0" Spacing="3" VerticalOptions="Start">
+                                <Label Text="{Binding Name}" FontSize="11" TextColor="{StaticResource QpBrown}"
+                                       HorizontalOptions="End" IsVisible="{Binding ShowName}" />
+                                <Border MaximumWidthRequest="280" HorizontalOptions="End"
+                                        BackgroundColor="#FFC49E" Stroke="#F0B385" StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 14" Padding="12,8">
+                                    <Label Text="{Binding Text}" FontSize="15" TextColor="{StaticResource QpBubbleText}"
+                                           LineBreakMode="WordWrap" />
+                                </Border>
+                                <!-- 时间 + 已读标(已读/未读/已读 N/总;绿=已读,灰=未读) -->
+                                <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
+                                    <Label Text="{Binding ReadText}" FontSize="9"
+                                           TextColor="{Binding ReadBrush}"
+                                           IsVisible="{Binding HasReadText}" VerticalOptions="Center" />
+                                    <Label Text="{Binding Time}" FontSize="9"
+                                           TextColor="{StaticResource QpBrownText}" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1" WidthRequest="38" HeightRequest="38"
+                                    StrokeShape="RoundRectangle 19" BackgroundColor="{Binding AvatarBg}"
+                                    VerticalOptions="Start" Margin="8,0,0,0">
+                                <Label Text="{Binding AvatarChar}" FontSize="15" FontAttributes="Bold"
+                                       TextColor="{StaticResource QpTitle}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- ============ emoji 表情面板(😊 切换;点选插光标处) ============ -->
+        <Border x:Name="EmojiPanel" Grid.Row="2" BackgroundColor="White" StrokeThickness="0"
+                IsVisible="False">
+            <Grid RowDefinitions="Auto,*">
+                <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource QpCardBorder}" />
+                <VerticalStackLayout Grid.Row="1" Padding="8,4,8,8">
+                    <Label Text="常用表情" FontSize="10" TextColor="{StaticResource QpBrownText}" Margin="8,4,0,2" />
+                    <ScrollView HeightRequest="248" VerticalScrollBarVisibility="Never">
+                        <FlexLayout x:Name="EmojiFlex" Wrap="Wrap" JustifyContent="Start"
+                                    Margin="2,0,2,0">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid WidthRequest="38" HeightRequest="38" Margin="2">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnEmojiPicked"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label Text="{Binding .}" FontSize="20" TextColor="{StaticResource QpText}"
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </ScrollView>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <!-- ============ 输入条:😊 切换表情 / 输入框(内嵌校验状态条)/ 发送 ============ -->
+        <Border Grid.Row="3" BackgroundColor="White" Padding="10,8"
+                Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                StrokeShape="RoundRectangle 16 16 0 0">
+            <Grid RowDefinitions="Auto,Auto" RowSpacing="6">
+                <!-- 状态提示条:发送超长/校验失败等红字,平时隐藏 -->
+                <Border x:Name="StatusRow" Grid.Row="0" BackgroundColor="#FCE8E2"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 8" IsVisible="False">
+                    <Label x:Name="StatusText" FontSize="11" TextColor="{StaticResource QpError}"
+                           HorizontalTextAlignment="Center" Padding="6,3" />
+                </Border>
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                    <!-- 😊 圆钮:切换 50 格表情面板(激活时深一档浅橙) -->
+                    <Border x:Name="EmojiBtnBg" WidthRequest="44" HeightRequest="44" VerticalOptions="End"
+                            StrokeShape="RoundRectangle 22" BackgroundColor="{StaticResource QpOrangePale}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEmojiClicked" />
+                        </Border.GestureRecognizers>
+                        <Label Text="😊" FontSize="19" TextColor="{StaticResource QpText}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Border Grid.Column="1" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12" BackgroundColor="{StaticResource QpBgTop}"
+                            Padding="12,2">
+                        <Editor x:Name="MsgEditor" Placeholder="说点什么…" FontSize="15"
+                                HeightRequest="40" BackgroundColor="Transparent"
+                                VerticalOptions="Center" Focused="OnEditorFocused" />
+                    </Border>
+                    <Button Grid.Column="2" Text="发送" FontSize="14" WidthRequest="72"
+                            CornerRadius="12" Clicked="OnSendClicked" VerticalOptions="End" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ============ 通用弹层:半透明遮罩(点空白收起)+ 输入/确认/主页 卡片 ============ -->
+        <Grid x:Name="Overlay" Grid.RowSpan="4" IsVisible="False">
+            <BoxView Color="#000000" Opacity="0.25">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOverlayDimTapped" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <!-- 输入卡:改备注 / 群改名共用 -->
+                <controls:PromptCard x:Name="PromptUi" IsVisible="False"
+                                     ConfirmRequested="OnPromptAccepted" CancelRequested="OnOverlayCanceled" />
+                <!-- 确认卡:删除好友(红)/ 退群 -->
+                <controls:ConfirmCard x:Name="ConfirmUi" IsVisible="False"
+                                      ConfirmRequested="OnConfirmAccepted" CancelRequested="OnOverlayCanceled" />
+                <!-- 用户主页卡:点头像弹 -->
+                <controls:UserProfileCard x:Name="ProfileUi" IsVisible="False"
+                                          AddRequested="OnProfileAddRequested" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
+</ContentPage>

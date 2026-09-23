@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.AddFriendPage"
+             BackgroundColor="#FFFDF9"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 搜索好友页:搜索框(输入即搜服务器)+ 状态行(桌面 AddFriendDialog Hint 位)+ 结果行(添加/已申请/已是好友) -->
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+        <controls:SheetHeader x:Name="Sheet" Title="搜索好友" CloseRequested="OnCloseClicked" />
+
+        <!-- 搜索输入框 -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Padding="12,10" Margin="12,10,12,0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Label Text="🔍" FontSize="16" VerticalOptions="Center" />
+                <Entry x:Name="SearchInput" Grid.Column="1" Placeholder="输入昵称或账号"
+                       FontSize="14" TextColor="{StaticResource QpText}"
+                       BackgroundColor="Transparent" TextChanged="OnSearchChanged" />
+            </Grid>
+        </Border>
+
+        <!-- 状态提示:搜索中... / 找到 N 个用户 / 没有找到匹配的用户 / 已向 X 发送申请(平时隐藏) -->
+        <Label x:Name="HintText" Grid.Row="2" FontSize="11" TextColor="{StaticResource QpBrownText}"
+               HorizontalTextAlignment="Center" Margin="16,8,16,0" IsVisible="False" />
+
+        <!-- 搜索结果 -->
+        <Border Grid.Row="3" Style="{StaticResource QpCard}" Padding="6,4" Margin="12,10">
+            <CollectionView x:Name="ResultList" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="0,36" Spacing="6" HorizontalOptions="Center">
+                        <Label Text="🔍" FontSize="28" HorizontalTextAlignment="Center" />
+                        <Label x:Name="EmptyLabel" Text="输入对方账号或昵称搜索,然后发送好友申请。" FontSize="12"
+                               TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8,9" ColumnDefinitions="Auto,*,Auto">
+                            <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 21"
+                                    BackgroundColor="{Binding AvatarBg}" VerticalOptions="Center" Margin="0,0,10,0">
+                                <Label Text="{Binding AvatarChar}" FontSize="16" FontAttributes="Bold"
+                                       TextColor="{StaticResource QpBrown}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="{Binding Nickname}" FontSize="14" FontAttributes="Bold"
+                                       TextColor="{StaticResource QpText}" />
+                                <Label Text="{Binding Sub}" FontSize="11" TextColor="{StaticResource QpBrown}" />
+                            </VerticalStackLayout>
+                            <!-- 添加 → 已申请(禁);已是好友(禁) -->
+                            <Button Grid.Column="2" Text="{Binding BtnText}" IsEnabled="{Binding BtnEnabled}"
+                                    Clicked="OnAddClicked" FontSize="12"
+                                    HeightRequest="30" Padding="12,0" CornerRadius="15"
+                                    BackgroundColor="#FF8C42"
+                                    TextColor="White" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+    </Grid>
+
+</ContentPage>

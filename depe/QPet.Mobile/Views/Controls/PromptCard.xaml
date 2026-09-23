@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.Controls.PromptCard">
+    <!-- 输入卡(备注/改名/改昵称共用):提示 + 输入 + 校验红字 + 取消/确定 -->
+    <Border WidthRequest="300" Padding="22,20" StrokeShape="RoundRectangle 16"
+            BackgroundColor="White" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1">
+        <VerticalStackLayout Spacing="12">
+            <Label x:Name="TitleLabel" FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource QpText}" HorizontalTextAlignment="Center" />
+            <Label x:Name="HintLabel" FontSize="12" TextColor="{StaticResource QpBrown}"
+                   HorizontalTextAlignment="Center" IsVisible="False" />
+            <Border Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource QpBgTop}" Padding="10,2">
+                <Editor x:Name="ValueEditor" FontSize="14" HeightRequest="44"
+                        BackgroundColor="Transparent" TextColor="{StaticResource QpText}" />
+            </Border>
+            <!-- 校验提示条(空 / 超长等),成功时由页面置空隐藏 -->
+            <Label x:Name="StatusLabel" FontSize="11" TextColor="{StaticResource QpError}"
+                   IsVisible="False" LineBreakMode="WordWrap" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,6,0,0">
+                <Button Grid.Column="0" Text="取消" HeightRequest="38"
+                        Style="{StaticResource QpSecondaryBtn}" Clicked="OnCancelClicked" />
+                <Button Grid.Column="1" Text="确定" HeightRequest="38"
+                        Style="{StaticResource QpActionBtn}" Clicked="OnConfirmClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

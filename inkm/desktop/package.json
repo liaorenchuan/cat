@@ -1,0 +1,12 @@
+{
+  "name": "inkm-desktop",
+  "version": "1.0.0",
+  "description": "智能键鼠 桌面管理器",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^35.0.0"
+  }
+}

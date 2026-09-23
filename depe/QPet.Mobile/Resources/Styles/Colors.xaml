@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
+
+    <!-- QPet 暖橙主题(与 02-Admin/03-Desktop 的 WarmOrange.xaml / UiPalette.cs 同色系) -->
+    <Color x:Key="Primary">#FF8C42</Color>
+    <Color x:Key="PrimaryDark">#FF7A2E</Color>
+    <Color x:Key="PrimaryDarkText">#FFE4C8</Color>
+    <Color x:Key="Secondary">#FFE4C8</Color>
+    <Color x:Key="SecondaryDarkText">#C4702F</Color>
+    <Color x:Key="Tertiary">#C4702F</Color>
+
+    <Color x:Key="White">White</Color>
+    <Color x:Key="Black">Black</Color>
+    <Color x:Key="Magenta">#D600AA</Color>
+    <Color x:Key="MidnightBlue">#190649</Color>
+    <Color x:Key="OffBlack">#1f1f1f</Color>
+
+    <Color x:Key="Gray100">#E1E1E1</Color>
+    <Color x:Key="Gray200">#C8C8C8</Color>
+    <Color x:Key="Gray300">#ACACAC</Color>
+    <Color x:Key="Gray400">#919191</Color>
+    <Color x:Key="Gray500">#6E6E6E</Color>
+    <Color x:Key="Gray600">#404040</Color>
+    <Color x:Key="Gray900">#212121</Color>
+    <Color x:Key="Gray950">#141414</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+
+    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
+    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
+    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
+    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}"/>
+    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
+    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
+    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
+    <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- ===== QPet 暖橙语义色(与 03-Desktop WarmOrange.xaml / UiPalette.cs 同值) ===== -->
+    <!-- 文字层次: 主文字 / 深棕 / 标题橙 / 次级棕 / 浅棕 -->
+    <Color x:Key="QpText">#5C432C</Color>
+    <Color x:Key="QpDeepBrown">#8B5E3C</Color>
+    <Color x:Key="QpTitle">#C4702F</Color>
+    <Color x:Key="QpBrown">#B08A62</Color>
+    <Color x:Key="QpBrownText">#C4A888</Color>
+    <!-- 边框与浅底 -->
+    <Color x:Key="QpBorder">#E8CFAF</Color>
+    <Color x:Key="QpCardBorder">#F0E0CC</Color>
+    <Color x:Key="QpSurface">#FFF3E6</Color>
+    <Color x:Key="QpSurfacePressed">#FFE4C8</Color>
+    <Color x:Key="QpOrangePale">#FFF0DC</Color>
+    <Color x:Key="QpOrangeLight">#FFD9AC</Color>
+    <!-- 背景渐变三色 -->
+    <Color x:Key="QpBgTop">#FFFDF9</Color>
+    <Color x:Key="QpBg">#FFF3E0</Color>
+    <Color x:Key="QpBgEnd">#FFE7C9</Color>
+    <!-- 在线/群组绿系 与 错误红 -->
+    <Color x:Key="QpGreenBg">#E5F6E0</Color>
+    <Color x:Key="QpGreen">#58B368</Color>
+    <Color x:Key="QpError">#E05B4C</Color>
+    <!-- 消息气泡 -->
+    <Color x:Key="QpBubbleMine">#FFC49E</Color>
+    <Color x:Key="QpBubbleText">#4A3A28</Color>
+    <Color x:Key="QpBubbleBorder">#F3D8BC</Color>
+    <!-- 日期条 / 徽章 -->
+    <Color x:Key="QpDividerLine">#EBD9C0</Color>
+    <Color x:Key="QpScrollThumb">#E6CFAE</Color>
+    <Color x:Key="QpNavSelected">#FFE9D2</Color>
+</ResourceDictionary>

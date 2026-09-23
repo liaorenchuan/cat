@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>智能键鼠</title>
+<link rel="stylesheet" href="css/app.css?v=2">
+</head>
+<body>
+<div class="card">
+  <div id="conn-bar">
+    <span class="conn-left"><span class="conn-dot red"></span><span class="conn-text" id="conn-text">检测中...</span></span>
+    <span id="header-title">🖱️ 触控板</span>
+    <button class="theme-btn-sm" onclick="cycleTheme()">🎨</button>
+    <span class="conn-right"><span id="mode-label" class="conn-text">键鼠一</span><span id="mode-toggle-btn" class="mode-badge legacy" onclick="toggleSendInput()">⇄</span></span>
+  </div>
+  <div id="pt">
+    <div id="touchpad" class="touchpad">
+    </div>
+  </div>
+
+  <div id="input-view">
+    <div id="in-st"></div>
+    <textarea id="ta" placeholder="" autofocus></textarea>
+    <div class="in-btn-row">
+      <button class="in-send" onclick="sendText()">⚡ 发送</button>
+    </div>
+    <div class="in-btn-row">
+      <button class="in-paste" onclick="sendPaste()">📋 粘贴</button>
+      <button class="in-enter" onclick="sendEnter()">⏎ 回车</button>
+    </div>
+    <div class="in-btn-row">
+      <button class="in-bs" onclick="sendBS()">← 退格</button>
+      <button class="in-del" onclick="sendDel()">⌫ 清行</button>
+    </div>
+  </div>
+
+  <button id="mode-toggle" onclick="toggleMode()" class="fab">⌨️</button>
+</div>
+
+<script src="js/app.js?v=5"></script>
+</body>
+</html>

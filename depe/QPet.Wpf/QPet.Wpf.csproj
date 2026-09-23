@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>QPet.Wpf</RootNamespace>
+    <!-- 应用图标(EXE + 窗口资源) -->
+    <ApplicationIcon>Assets\mushroom.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\mushroom.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 宠物素材:原 QPet.Core 嵌入资源。LogicalName 与 PetAssets.cs 内资源名常量一一对应,勿改名 -->
+    <EmbeddedResource Include="Assets\pet.png" LogicalName="QPet.Core.Resources.pet.png" />
+    <EmbeddedResource Include="Assets\pet_blink_half.png" LogicalName="QPet.Core.Resources.pet_blink_half.png" />
+    <EmbeddedResource Include="Assets\pet_blink_closed.png" LogicalName="QPet.Core.Resources.pet_blink_closed.png" />
+    <EmbeddedResource Include="Assets\pet_heart.png" LogicalName="QPet.Core.Resources.pet_heart.png" />
+    <EmbeddedResource Include="Assets\pet_kneel.png" LogicalName="QPet.Core.Resources.pet_kneel.png" />
+    <EmbeddedResource Include="Assets\pet_clicked.png" LogicalName="QPet.Core.Resources.pet_clicked.png" />
+    <EmbeddedResource Include="Assets\pet_eat.png" LogicalName="QPet.Core.Resources.pet_eat.png" />
+    <EmbeddedResource Include="Assets\pet_sleep.png" LogicalName="QPet.Core.Resources.pet_sleep.png" />
+    <EmbeddedResource Include="Assets\pet_drag.png" LogicalName="QPet.Core.Resources.pet_drag.png" />
+    <EmbeddedResource Include="Assets\pet_left.png" LogicalName="QPet.Core.Resources.pet_left.png" />
+  </ItemGroup>
+
+</Project>

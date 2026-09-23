@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>QPet.Server</RootNamespace>
+    <!-- 独立服务器:控制台窗口常驻显示 IP/管理密码/日志 -->
+    <UseAppHost>true</UseAppHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WebSocket 主通道 + 管理 REST(Kestrel) -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- 用户信息与聊天记录存储 -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
+  </ItemGroup>
+
+</Project>

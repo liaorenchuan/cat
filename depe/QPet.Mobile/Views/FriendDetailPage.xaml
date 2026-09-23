@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.FriendDetailPage"
+             BackgroundColor="#FFFDF9"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 好友详情页:大头像 + 备注/账号/状态行 + 发消息 / 删除好友(改备注走输入卡弹层) -->
+    <Grid RowDefinitions="Auto,*">
+
+        <controls:SheetHeader x:Name="Sheet" Title="好友详情" CloseRequested="OnCloseClicked" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="12,10" Spacing="12">
+
+                <!-- 头部资料卡:大头像(在线点)+ 显示名(备注优先)+ 原昵称 -->
+                <Border Style="{StaticResource QpCard}" Padding="20,18">
+                    <VerticalStackLayout Spacing="6">
+                        <Grid WidthRequest="76" HeightRequest="76" HorizontalOptions="Center">
+                            <Border WidthRequest="72" HeightRequest="72" StrokeShape="RoundRectangle 36"
+                                    BackgroundColor="{StaticResource QpSurfacePressed}">
+                                <Label x:Name="AvatarCharText" FontSize="30" FontAttributes="Bold"
+                                       TextColor="{StaticResource QpTitle}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Ellipse x:Name="StatusDot" WidthRequest="14" HeightRequest="14"
+                                     Stroke="White" StrokeThickness="2"
+                                     HorizontalOptions="End" VerticalOptions="End" />
+                        </Grid>
+                        <Label x:Name="NameText" FontSize="19" FontAttributes="Bold"
+                               TextColor="{StaticResource QpText}" HorizontalTextAlignment="Center" />
+                        <Label x:Name="OriginNickText" FontSize="11" TextColor="{StaticResource QpBrown}"
+                               HorizontalTextAlignment="Center" IsVisible="False" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- 信息行:备注(点击改)/ 账号 / 状态 -->
+                <Border Style="{StaticResource QpCard}" Padding="6,2">
+                    <VerticalStackLayout Spacing="0">
+                        <Grid Padding="10,12" ColumnDefinitions="Auto,*">
+                            <Label Text="备注" FontSize="13" TextColor="{StaticResource QpText}" />
+                            <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Margin="16,0,0,0">
+                                <Label x:Name="RemarkText" FontSize="13" TextColor="{StaticResource QpBrownText}"
+                                       HorizontalTextAlignment="End" />
+                                <Label Grid.Column="1" Text="›" FontSize="16"
+                                       TextColor="{StaticResource QpBrownText}" Margin="8,0,0,0" />
+                            </Grid>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRemarkRowTapped" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{StaticResource QpDividerLine}" Margin="10,0" />
+                        <Grid Padding="10,12" ColumnDefinitions="Auto,*">
+                            <Label Text="账号" FontSize="13" TextColor="{StaticResource QpText}" />
+                            <Label Grid.Column="1" x:Name="AccountText" FontSize="13"
+                                   TextColor="{StaticResource QpBrownText}"
+                                   HorizontalTextAlignment="End" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{StaticResource QpDividerLine}" Margin="10,0" />
+                        <Grid Padding="10,12" ColumnDefinitions="Auto,*">
+                            <Label Text="状态" FontSize="13" TextColor="{StaticResource QpText}" />
+                            <Label Grid.Column="1" x:Name="StatusText" FontSize="13"
+                                   TextColor="{StaticResource QpBrownText}"
+                                   HorizontalTextAlignment="End" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- 动作:发消息 → 直接进私聊;删除好友(确认后从好友池与会话移除) -->
+                <VerticalStackLayout Spacing="10">
+                    <Button Text="💬 发消息" Clicked="OnMsgClicked" FontSize="14" HeightRequest="42"
+                            CornerRadius="12" BackgroundColor="#FF8C42" TextColor="White" />
+                    <Button Text="✂ 删除好友" Clicked="OnDeleteClicked" FontSize="14" HeightRequest="42"
+                            CornerRadius="12" BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                    <!-- 状态提示:资料拉取失败/没连接服务器(红)、备注已保存(绿);平时隐藏 -->
+                    <Label x:Name="PageTip" FontSize="11" HorizontalTextAlignment="Center"
+                           IsVisible="False" Margin="0,2,0,0" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- 弹层:改备注输入卡 / 删除确认卡 -->
+        <Grid x:Name="Overlay" Grid.RowSpan="2" IsVisible="False">
+            <BoxView Color="#000000" Opacity="0.25">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOverlayDimTapped" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <controls:PromptCard x:Name="PromptUi" IsVisible="False"
+                                     ConfirmRequested="OnPromptAccepted" CancelRequested="OnOverlayCanceled" />
+                <controls:ConfirmCard x:Name="ConfirmUi" IsVisible="False"
+                                      ConfirmRequested="OnConfirmAccepted" CancelRequested="OnOverlayCanceled" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
+</ContentPage>

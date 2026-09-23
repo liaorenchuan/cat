@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.SearchGroupPage"
+             BackgroundColor="#FFFDF9"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 搜索加群页(对齐桌面 SearchGroupDialog):搜索框 + 状态行(引导/搜索中/结果数/操作结果) + 结果行 -->
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+        <controls:SheetHeader x:Name="Sheet" Title="搜索群聊" CloseRequested="OnCloseClicked" />
+
+        <!-- 搜索框 -->
+        <Border Grid.Row="1" Margin="12,0,12,8" Padding="0,4"
+                StrokeShape="RoundRectangle 22" Stroke="#F0E0CC" BackgroundColor="White">
+            <Grid Padding="12,0" ColumnDefinitions="Auto,*">
+                <Label Text="🔍" FontSize="14" VerticalOptions="Center" Margin="0,0,8,0" />
+                <Entry x:Name="SearchInput" Grid.Column="1" Placeholder="输入群名称或群号"
+                       FontSize="14" TextColor="{StaticResource QpText}"
+                       PlaceholderColor="{StaticResource QpBrownText}" TextChanged="OnSearchChanged" />
+            </Grid>
+        </Border>
+
+        <!-- 状态行:桌面 SearchGroupDialog 提示位。平时隐藏,搜索与操作结果显示在这里 -->
+        <Label x:Name="HintLabel" Grid.Row="2" Margin="16,0,16,6"
+               FontSize="11" TextColor="{StaticResource QpBrown}"
+               IsVisible="False" />
+
+        <!-- 结果列表:类型徽(公共群橙/好友群灰)+ 状态按钮(你创建的群/已在群内/已申请/＋加入/✉申请) -->
+        <Border Grid.Row="3" Style="{StaticResource QpCard}" Margin="12,0,12,10" Padding="6,4">
+            <CollectionView x:Name="GroupList" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8,9" ColumnDefinitions="Auto,*,Auto">
+                            <!-- 头像:绿底 👥(群统一,与群聊列表同款) -->
+                            <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 21"
+                                    BackgroundColor="{Binding AvatarBg}" VerticalOptions="Center" Margin="0,0,10,0">
+                                <Label Text="👥" FontSize="17"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpText}" LineBreakMode="TailTruncation" />
+                                    <!-- 类型徽章:公共群橙 / 好友群灰 -->
+                                    <Border BackgroundColor="{Binding KindBg}"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                            Padding="4,1" VerticalOptions="Center">
+                                        <Label Text="{Binding KindText}" FontSize="9"
+                                               TextColor="{StaticResource QpText}" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding Sub}" FontSize="11" TextColor="{StaticResource QpBrown}" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="2" Text="{Binding BtnText}" IsEnabled="{Binding BtnEnabled}"
+                                    Clicked="OnRowBtnClicked"
+                                    FontSize="11" HeightRequest="28" Padding="12,0" CornerRadius="14"
+                                    BackgroundColor="#FF8C42" TextColor="White"
+                                    VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+    </Grid>
+
+</ContentPage>

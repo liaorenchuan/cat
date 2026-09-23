@@ -1,0 +1,63 @@
+<Window x:Class="QPet.Wpf.Dialogs.MembersDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="群成员" Width="300" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <StackPanel Margin="16">
+        <TextBlock x:Name="CountText" FontSize="12" Foreground="{StaticResource UiDeepBrown}" Margin="0,0,0,8" />
+        <ListBox x:Name="MemberList" MaxHeight="360" BorderThickness="0" Background="Transparent">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                        <!-- 在线圆点:绿色在线 / 灰色离线 -->
+                        <Ellipse Width="9" Height="9" Fill="{Binding DotBrush}"
+                                 VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Column="1" Text="{Binding Nickname}" FontSize="13"
+                                   Foreground="{StaticResource WarmText}" VerticalAlignment="Center" />
+                        <!-- 操作:自己的标"我",群主/管理员/好友标文字;加好友按钮与标记共存(群主/管理员也有) -->
+                        <TextBlock Grid.Column="2" Text="{Binding ActionText}" FontSize="10"
+                                   Foreground="{StaticResource UiBrown}" VerticalAlignment="Center" Margin="8,0,0,0"
+                                   Visibility="{Binding ActionTextVisibility}" />
+                        <Button Grid.Column="3" Content="＋ 好友" FontSize="10" Padding="7,2"
+                                Style="{StaticResource SecondaryButton}"
+                                VerticalAlignment="Center" Margin="8,0,0,0"
+                                Visibility="{Binding AddButtonVisibility}"
+                                Tag="{Binding}" Click="OnMemberAdd" />
+                        <!-- 群主视角:设置/取消管理员 -->
+                        <Button Grid.Column="2" Content="{Binding AdminButtonText}" FontSize="10"
+                                Padding="7,2" Style="{StaticResource SecondaryButton}"
+                                VerticalAlignment="Center" Margin="8,0,0,0"
+                                Visibility="{Binding AdminButtonVisibility}"
+                                Tag="{Binding}" Click="OnToggleAdmin" />
+                        <!-- 群主视角:移出成员(不可移自己/群主) -->
+                        <Button Grid.Column="4" Content="🚫 移出" FontSize="10" Padding="7,2"
+                                Style="{StaticResource SecondaryButton}"
+                                VerticalAlignment="Center" Margin="8,0,0,0"
+                                Visibility="{Binding KickButtonVisibility}"
+                                Tag="{Binding}" Click="OnKickMember" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Style="{StaticResource PrimaryButton}" Content="关闭" Width="72"
+                HorizontalAlignment="Right" Margin="0,12,0,0" IsCancel="True" />
+
+        <!-- 拉好友进群(邀请制):我的好友(未在群内的)可选,点"拉入"发邀请,对方同意才入群;无可拉好友时禁用并提示 -->
+        <Border x:Name="InvitePanel" Background="#FFF6EA" CornerRadius="8" Padding="10,8"
+                Margin="0,10,0,0">
+            <StackPanel>
+                <TextBlock Text="＋ 拉好友进群" FontSize="11" FontWeight="Bold" Foreground="{StaticResource UiDeepBrown}" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <ComboBox x:Name="FriendBox" Width="150" FontSize="12"
+                              DisplayMemberPath="Title" />
+                    <Button x:Name="InviteButton" Content="拉 入" FontSize="11" Padding="10,3"
+                            Style="{StaticResource PrimaryButton}" Margin="8,0,0,0"
+                            VerticalAlignment="Center" Click="OnInvite" />
+                    <TextBlock x:Name="InviteHintText" FontSize="10" Foreground="{StaticResource UiBrown}"
+                               VerticalAlignment="Center" Margin="8,0,0,0" TextWrapping="Wrap"
+                               MaxWidth="130" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</Window>

@@ -1,0 +1,83 @@
+<Window x:Class="QPet.Wpf.Dialogs.AddFriendDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="添加好友" Width="400" Height="460"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        ShowInTaskbar="False" Background="{StaticResource UiDialogBg}">
+
+    <Window.Resources>
+        <!-- 结果卡片:白卡 + 圆角 12 + 暖橙阴影,悬停浅橙底(与好友列表条目同风格) -->
+        <Style x:Key="ResultItem" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="bd" Background="{StaticResource UiCardBg}" CornerRadius="12" BorderBrush="{StaticResource WarmCardBorder}"
+                                BorderThickness="1" Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#C4702F" BlurRadius="12" ShadowDepth="1" Opacity="0.08" />
+                            </Border.Effect>
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource WarmSurface}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="16">
+        <!-- 搜索行 -->
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+            <Button DockPanel.Dock="Right" Style="{StaticResource PrimaryButton}" Content="搜索"
+                    Width="64" Margin="8,0,0,0" Click="OnSearch" />
+            <TextBox x:Name="SearchBox" FontSize="13" Height="32" Padding="6,4"
+                     VerticalContentAlignment="Center" KeyDown="OnSearchKeyDown"
+                     TextChanged="OnSearchBoxChanged"
+                     ToolTip="按账号或昵称搜索" />
+        </DockPanel>
+
+        <!-- 结果列表:首字头像 + 昵称/账号 + 添加按钮 -->
+        <ListBox x:Name="ResultList" BorderThickness="0" Background="Transparent"
+                 ItemContainerStyle="{StaticResource ResultItem}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="34" Height="34" CornerRadius="17"
+                                Background="{Binding AvatarBrush}" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding AvatarChar}" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource WarmSecondary}" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Nickname}" FontSize="13" FontWeight="Bold"
+                                       Foreground="{StaticResource WarmText}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding AccountHint}" FontSize="10" Foreground="{StaticResource UiBrown}" />
+                        </StackPanel>
+                        <!-- 可添加=主按钮(橙渐变);已是好友/已申请=禁用自动变灰 -->
+                        <Button Grid.Column="2" Style="{StaticResource PrimaryButton}"
+                                Content="{Binding BtnText}" Tag="{Binding}" Click="OnAddClick"
+                                IsEnabled="{Binding CanAdd}" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- 提示 / 错误 -->
+        <TextBlock x:Name="HintText" DockPanel.Dock="Top" FontSize="11" Foreground="{StaticResource UiBrown}"
+                   TextWrapping="Wrap" Margin="0,0,0,10" Text="输入对方账号或昵称搜索,然后发送好友申请。" />
+        <TextBlock x:Name="ErrorText" DockPanel.Dock="Bottom" FontSize="11" Foreground="{StaticResource WarmError}"
+                   TextWrapping="Wrap" Visibility="Collapsed" />
+    </DockPanel>
+</Window>

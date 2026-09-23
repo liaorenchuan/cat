@@ -1,0 +1,193 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 暖橙主题色板:与 UiPalette.cs 色值一一对应(视图 XAML 引用;样式内部保持原值) -->
+    <SolidColorBrush x:Key="WarmPrimary" Color="#FF8C42" />
+    <SolidColorBrush x:Key="WarmPrimaryDark" Color="#FF7A2E" />
+    <SolidColorBrush x:Key="WarmSecondary" Color="#B07A45" />
+    <SolidColorBrush x:Key="WarmText" Color="#5C432C" />
+    <SolidColorBrush x:Key="WarmBorder" Color="#E8CFAF" />
+    <SolidColorBrush x:Key="WarmCardBorder" Color="#F0E0CC" />
+    <SolidColorBrush x:Key="WarmSurface" Color="#FFF3E6" />
+    <SolidColorBrush x:Key="WarmSurfacePressed" Color="#FFE4C8" />
+    <SolidColorBrush x:Key="WarmTitle" Color="#C4702F" />
+    <SolidColorBrush x:Key="WarmError" Color="#E05B4C" />
+
+    <!-- 视图语义色(与 UiPalette.cs 对应;x 31 次等高频重复色收纳,低频原值保留在调用处)。
+         GradientStop.Color 是 Color 类型,故同值另备 *Color 资源(引用处按属性类型取 Brush 或 Color) -->
+    <SolidColorBrush x:Key="UiBrown" Color="#B08A62" />
+    <SolidColorBrush x:Key="UiBrownText" Color="#C4A888" />
+    <SolidColorBrush x:Key="UiDeepBrown" Color="#8B5E3C" />
+    <SolidColorBrush x:Key="UiDialogBg" Color="#FFFDF8" />
+    <SolidColorBrush x:Key="UiCardBg" Color="#FFF9F0" />
+    <SolidColorBrush x:Key="UiAppBgTop" Color="#FFFDF9" />
+    <SolidColorBrush x:Key="UiGreenBg" Color="#E5F6E0" />
+    <SolidColorBrush x:Key="UiOrangeLight" Color="#FFD9AC" />
+    <SolidColorBrush x:Key="UiOrangePale" Color="#FFF0DC" />
+    <SolidColorBrush x:Key="UiGreen" Color="#58B368" />
+    <Color x:Key="UiAppBgColor">#FFF3E0</Color>
+    <Color x:Key="UiAppBgTopColor">#FFFDF9</Color>
+    <Color x:Key="UiChatBgEndColor">#FFE7C9</Color>
+
+    <!-- 与客户端一致的暖橙主题:微软雅黑 + 卡片阴影 + 圆角控件 -->
+
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
+    </Style>
+
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="14" />
+        <Setter Property="BorderBrush" Value="#F0E0CC" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#C4702F" BlurRadius="16" ShadowDepth="2" Opacity="0.10" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="14,7" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bd" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FFB066" Offset="0" />
+                                <GradientStop Color="#FF8C42" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="#FF7A2E" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="#FFA35C" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="bd" Property="Background" Value="#E8D8C2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SecondaryButton" TargetType="Button">
+        <Setter Property="Foreground" Value="#B07A45" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bd" Background="White" BorderBrush="#E8CFAF" BorderThickness="1"
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="#FFF3E6" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="#FFE4C8" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="bd" Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SectionTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#C4702F" />
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="#5C432C" />
+        <Setter Property="BorderBrush" Value="#E8CFAF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <!-- 系统默认模板结构 + 圆角:Padding 与内容对齐交给 TextBoxBase 内部计算,
+                         模板 Border 上放 Padding 会破坏 PasswordBox 的对齐导致圆点被裁 -->
+                    <Border x:Name="bd" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8" SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HorizontalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#FF8C42" />
+                            <Setter TargetName="bd" Property="BorderThickness" Value="1.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="PasswordBox">
+        <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="#5C432C" />
+        <Setter Property="BorderBrush" Value="#E8CFAF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="PasswordBox">
+                    <!-- 系统默认模板结构 + 圆角:Padding 与内容对齐交给 TextBoxBase 内部计算,
+                         模板 Border 上放 Padding 会破坏 PasswordBox 的对齐导致圆点被裁 -->
+                    <Border x:Name="bd" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8" SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HorizontalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#FF8C42" />
+                            <Setter TargetName="bd" Property="BorderThickness" Value="1.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ListView">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+</ResourceDictionary>

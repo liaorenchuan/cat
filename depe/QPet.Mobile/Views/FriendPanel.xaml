@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.FriendPanel">
+
+    <!-- 好友页签内容:🔍 搜索好友 / 📮 好友申请(有待处理显 ●)+ 好友列表(备注优先) -->
+    <Grid RowDefinitions="Auto,*" Padding="12,6">
+
+        <!-- 顶部动作行:搜索 → 搜索页;申请 → 申请中心(kind0) -->
+        <Border Grid.Row="0" Style="{StaticResource QpCard}" Padding="12,10" Margin="0,0,0,10">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="🔍 搜索好友" Clicked="OnSearchClicked"
+                        Style="{StaticResource QpSecondaryBtn}" />
+                <!-- 申请按钮:有未处理申请时右上角 ● -->
+                <Grid Grid.Column="1">
+                    <Button Text="📮 好友申请" Clicked="OnRequestsClicked"
+                            Style="{StaticResource QpSecondaryBtn}" />
+                    <Ellipse x:Name="ReqDot" WidthRequest="9" HeightRequest="9"
+                             Fill="{StaticResource QpError}" Stroke="White" StrokeThickness="2"
+                             HorizontalOptions="End" VerticalOptions="Start"
+                             IsVisible="False" Margin="0,-1,-1,0" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 好友列表:白卡片内;行点击进好友详情 -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Padding="6,4">
+            <CollectionView x:Name="FriendList" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="0,36" Spacing="6" HorizontalOptions="Center">
+                        <Label Text="🫥" FontSize="30" HorizontalTextAlignment="Center" />
+                        <Label Text="还没有好友" FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource QpBrown}" HorizontalTextAlignment="Center" />
+                        <Label Text="点击上方「搜索好友」添加" FontSize="11"
+                               TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!-- 行点击 → 好友详情页(账号路由参数) -->
+                        <Grid Padding="8,9" ColumnDefinitions="Auto,*,Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnFriendTapped" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+
+                            <!-- 头像色块 -->
+                            <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 21"
+                                    BackgroundColor="{Binding AvatarBg}" VerticalOptions="Center" Margin="0,0,10,0">
+                                <Label Text="{Binding AvatarChar}" FontSize="16" FontAttributes="Bold"
+                                       TextColor="{StaticResource QpBrown}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+
+                            <!-- 显示名(备注优先)+ 原昵称/账号 + 在线圆点 -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpText}" VerticalOptions="Center" />
+                                    <Ellipse WidthRequest="8" HeightRequest="8" Fill="{Binding StatusBrush}"
+                                             VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding Sub}" FontSize="11" TextColor="{StaticResource QpBrown}"
+                                       LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+
+                            <Label Grid.Column="2" Text="{Binding StatusWord}" FontSize="10"
+                                   TextColor="{StaticResource QpBrownText}" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+    </Grid>
+
+</ContentView>

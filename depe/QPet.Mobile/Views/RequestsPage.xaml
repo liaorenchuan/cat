@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.RequestsPage"
+             BackgroundColor="#FFFDF9"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 申请中心:三个页签(好友申请 / 群申请 / 群邀请)由 kind=0..2 路由参数进入;同意/拒绝即移除并刷新计数 -->
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <controls:SheetHeader x:Name="Sheet" Title="申请中心" CloseRequested="OnCloseClicked" />
+
+        <!-- 页签行 -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Padding="4" Margin="12,10,12,0">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="2">
+                <Button x:Name="TabFriendReq" Text="好友申请" Clicked="OnTabFriendClicked"
+                        Margin="2" CornerRadius="10" FontSize="12" />
+                <Button Grid.Column="1" x:Name="TabGroupReq" Text="群申请" Clicked="OnTabGroupClicked"
+                        Margin="2" CornerRadius="10" FontSize="12" />
+                <Button Grid.Column="2" x:Name="TabInvite" Text="群邀请" Clicked="OnTabInviteClicked"
+                        Margin="2" CornerRadius="10" FontSize="12" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource QpCard}" Padding="6,4" Margin="12,10">
+            <Grid>
+                <!-- 页签0:好友申请 -->
+                <CollectionView x:Name="FriendReqList" SelectionMode="None">
+                    <!-- 空态两行:不写 \n/&#10;(XAML 文本内换行两种写法都不渲染),用两个 Label 分行 -->
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Spacing="2" Margin="0,34">
+                            <Label Text="没有待处理的好友申请" FontSize="12"
+                                   TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                            <Label Text="去搜索页加个好友吧" FontSize="12"
+                                   TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8,10" ColumnDefinitions="Auto,*,Auto">
+                                <Border Grid.Column="0" WidthRequest="42" HeightRequest="42"
+                                        StrokeShape="RoundRectangle 21" BackgroundColor="{Binding AvatarBg}"
+                                        VerticalOptions="Center" Margin="0,0,10,0">
+                                    <Label Text="{Binding AvatarChar}" FontSize="16" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpBrown}"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Grid Grid.Column="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="{Binding FromNick}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpText}" />
+                                    <Label Grid.Column="1" Text="{Binding TimeText}" FontSize="10"
+                                           TextColor="{StaticResource QpBrownText}" />
+                                    <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Message}"
+                                           FontSize="11" TextColor="{StaticResource QpBrown}"
+                                           LineBreakMode="TailTruncation" Margin="0,2,0,0" />
+                                </Grid>
+                                <HorizontalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center"
+                                                       Margin="8,0,0,0">
+                                    <Button Text="同意" Clicked="OnAgreeClicked" FontSize="11"
+                                            HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                            BackgroundColor="#58B368" TextColor="White" />
+                                    <Button Text="拒绝" Clicked="OnRefuseClicked" FontSize="11"
+                                            HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                            BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- 页签1:群申请(有人申请进群) -->
+                <CollectionView x:Name="GroupReqList" SelectionMode="None" IsVisible="False">
+                    <CollectionView.EmptyView>
+                        <Label Text="没有待审批的加群申请" FontSize="12"
+                               TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center"
+                               Margin="0,40" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8,10" ColumnDefinitions="Auto,*,Auto">
+                                <Border Grid.Column="0" WidthRequest="42" HeightRequest="42"
+                                        StrokeShape="RoundRectangle 21" BackgroundColor="{Binding AvatarBg}"
+                                        VerticalOptions="Center" Margin="0,0,10,0">
+                                    <Label Text="{Binding AvatarChar}" FontSize="16" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpBrown}"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Grid Grid.Column="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="{Binding FromNick}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpText}" />
+                                    <Label Grid.Column="1" Text="{Binding TimeText}" FontSize="10"
+                                           TextColor="{StaticResource QpBrownText}" />
+                                    <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Sub}"
+                                           FontSize="11" TextColor="{StaticResource QpBrown}"
+                                           LineBreakMode="TailTruncation" Margin="0,2,0,0" />
+                                </Grid>
+                                <HorizontalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center"
+                                                       Margin="8,0,0,0">
+                                    <Button Text="同意" Clicked="OnAgreeClicked" FontSize="11"
+                                            HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                            BackgroundColor="#58B368" TextColor="White" />
+                                    <Button Text="拒绝" Clicked="OnRefuseClicked" FontSize="11"
+                                            HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                            BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- 页签2:群邀请(好友拉我进群) -->
+                <CollectionView x:Name="InviteList" SelectionMode="None" IsVisible="False">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Spacing="2" Margin="0,34">
+                            <Label Text="没有待同意的群邀请" FontSize="12"
+                                   TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                            <Label Text="好友拉你进群时会在这里提醒" FontSize="12"
+                                   TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8,10" ColumnDefinitions="Auto,*,Auto">
+                                <Border Grid.Column="0" WidthRequest="42" HeightRequest="42"
+                                        StrokeShape="RoundRectangle 21" BackgroundColor="{Binding AvatarBg}"
+                                        VerticalOptions="Center" Margin="0,0,10,0">
+                                    <Label Text="{Binding AvatarChar}" FontSize="16" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpBrown}"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Grid Grid.Column="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="{Binding FromNick}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpText}" />
+                                    <Label Grid.Column="1" Text="{Binding TimeText}" FontSize="10"
+                                           TextColor="{StaticResource QpBrownText}" />
+                                    <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Sub}"
+                                           FontSize="11" TextColor="{StaticResource QpBrown}"
+                                           LineBreakMode="TailTruncation" Margin="0,2,0,0" />
+                                </Grid>
+                                <HorizontalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center"
+                                                       Margin="8,0,0,0">
+                                    <Button Text="同意" Clicked="OnAgreeClicked" FontSize="11"
+                                            HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                            BackgroundColor="#58B368" TextColor="White" />
+                                    <Button Text="拒绝" Clicked="OnRefuseClicked" FontSize="11"
+                                            HeightRequest="28" Padding="9,0" CornerRadius="14"
+                                            BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+    </Grid>
+
+</ContentPage>

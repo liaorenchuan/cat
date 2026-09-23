@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.Controls.SheetHeader">
+    <!-- 页签头(带 ✕ 关闭的 push 页面共用):✕ + 居中标题 -->
+    <Border BackgroundColor="White" Padding="14,10,14,10"
+            Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+            StrokeShape="RoundRectangle 0 0 14 14">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <!-- ✕ 自绘圆钮:返回上一页(与 Android 返回键等价) -->
+            <Border Grid.Column="0" WidthRequest="34" HeightRequest="34" StrokeShape="RoundRectangle 17"
+                    BackgroundColor="{StaticResource QpOrangePale}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCloseTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="✕" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource QpTitle}"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Label x:Name="TitleLabel" Grid.Column="1" FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource QpText}" HorizontalTextAlignment="Center"
+                   VerticalOptions="Center" />
+        </Grid>
+    </Border>
+</ContentView>

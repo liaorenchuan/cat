@@ -1,0 +1,13 @@
+<Application x:Class="QPet.Admin.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- 暖橙主题:本地 Themes/WarmOrange.xaml(含管理端专属 AppWindow/WarmListBoxItem/WarmCheckBox) -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/QPet.Admin;component/Themes/WarmOrange.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.LoginPage"
+             Title="登录"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 登录页:奶油渐变底 + 圆底图标 + 账号卡片,照搬桌面 LoginView 的视觉 -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="{StaticResource QpBgTop}" Offset="0" />
+            <GradientStop Color="{StaticResource QpBg}" Offset="1" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="28,70,28,40" Spacing="0" HorizontalOptions="Fill" MaximumWidthRequest="460">
+
+            <!-- 图标:白底圆 + 蘑菇头 emoji(与桌宠素材同形象) -->
+            <Border WidthRequest="96" HeightRequest="96" StrokeShape="RoundRectangle 48"
+                    HorizontalOptions="Center"
+                    BackgroundColor="White" Stroke="{StaticResource QpBorder}" StrokeThickness="1">
+                <Label Text="🍄" FontSize="46" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+
+            <Label x:Name="TitleText" Text="Q版桌宠" FontSize="30" FontAttributes="Bold"
+                   TextColor="{StaticResource QpTitle}" HorizontalOptions="Center" Margin="0,18,0,0" />
+            <Label x:Name="SubtitleText" Text="局域网聊天 · 好友 · 群聊" FontSize="14"
+                   TextColor="{StaticResource QpBrown}" HorizontalOptions="Center" Margin="0,8,0,22" />
+
+            <!-- 账号卡片(白底圆角) -->
+            <Border Style="{StaticResource QpCard}" Padding="20,18">
+                <VerticalStackLayout Spacing="0">
+
+                    <!-- 注册欢迎横幅 -->
+                    <Border x:Name="ModeBanner" IsVisible="False"
+                            BackgroundColor="{StaticResource QpGreen}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8" Padding="12,8" Margin="0,0,0,16">
+                        <Label Text="🎉 注册新账号,自动加入公共群聊" FontSize="13"
+                               TextColor="White" HorizontalOptions="Center" />
+                    </Border>
+
+                    <!-- 注册模式才显示:昵称 -->
+                    <VerticalStackLayout x:Name="NicknamePanel" IsVisible="False">
+                        <Label Text="昵称" FontSize="13" TextColor="{StaticResource QpDeepBrown}" Margin="0,0,0,6" />
+                        <Border Stroke="{StaticResource QpBorder}" StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8" BackgroundColor="White" Padding="12,2" Margin="0,0,0,16">
+                            <Entry x:Name="NicknameEntry" Placeholder="给自己起个名字" FontSize="16" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Label Text="账号" FontSize="13" TextColor="{StaticResource QpDeepBrown}" Margin="0,0,0,6" />
+                    <Border Stroke="{StaticResource QpBorder}" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8" BackgroundColor="White" Padding="12,2" Margin="0,0,0,16">
+                        <Entry x:Name="AccountEntry" Placeholder="请输入账号" FontSize="16" Keyboard="Numeric" />
+                    </Border>
+
+                    <Label Text="密码" FontSize="13" TextColor="{StaticResource QpDeepBrown}" Margin="0,0,0,6" />
+                    <Border Stroke="{StaticResource QpBorder}" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8" BackgroundColor="White" Padding="12,2">
+                        <Entry x:Name="PasswordEntry" Placeholder="请输入密码" FontSize="16" IsPassword="True" />
+                    </Border>
+
+                    <!-- 记住密码(本机 Preferences 明文保存,移动端无 DPAPI) -->
+                    <HorizontalStackLayout Spacing="8" Margin="0,14,0,0">
+                        <Switch x:Name="RememberSwitch" IsToggled="True"
+                                OnColor="{StaticResource Primary}" />
+                        <Label Text="记住密码" FontSize="13" TextColor="{StaticResource QpDeepBrown}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <!-- 服务器地址:默认 10.0.2.2(模拟器→宿主机),真机改电脑局域网 IP;自动检测可搜索;登录成功记住 -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,16,0,0">
+                        <Label Text="服务器" FontSize="13" TextColor="{StaticResource QpDeepBrown}"
+                               VerticalOptions="Center" Margin="0,0,10,0" />
+                        <Border Grid.Column="1" Stroke="{StaticResource QpBorder}" StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8" BackgroundColor="White" Padding="10,2">
+                            <Entry x:Name="ServerEntry" Placeholder="10.0.2.2:54321" FontSize="14" />
+                        </Border>
+                        <Button Grid.Column="2" x:Name="AutoDetectButton" Style="{StaticResource QpSecondaryBtn}"
+                                Text="自动检测" FontSize="12" Padding="10,6" MinimumHeightRequest="38"
+                                Margin="8,0,0,0" VerticalOptions="Center"
+                                ToolTipProperties.Text="自动搜索 QPet 服务器并填入地址" Clicked="OnAutoDetect" />
+                    </Grid>
+
+                    <!-- 自动检测成功提示(绿色,3秒后自动消失);错误仍走下方红色 ErrorText -->
+                    <Label x:Name="DetectInfoText" IsVisible="False" Text=""
+                           FontSize="13" TextColor="#58B368" Margin="0,12,0,0" />
+
+                    <!-- 错误提示(账号密码错/连不上/被踢原因在此显示) -->
+                    <Label x:Name="ErrorText" IsVisible="False" Text=""
+                           FontSize="13" TextColor="{StaticResource QpError}" Margin="0,12,0,0" />
+
+                    <Button x:Name="SubmitButton" Text="登 录" FontSize="17" Margin="0,20,0,0"
+                            MinimumHeightRequest="48" Clicked="OnSubmitClicked" />
+
+                    <Button x:Name="OfflineButton" Text="本地离线登录" Style="{StaticResource QpLinkBtn}"
+                            HorizontalOptions="Center" Margin="0,10,0,0" Clicked="OnOfflineClicked" />
+
+                    <Button x:Name="ToggleModeButton" Text="没有账号? 注册" Style="{StaticResource QpLinkBtn}"
+                            HorizontalOptions="Center" Margin="0,2,0,0" Clicked="OnToggleMode" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="账号数据在服务器上,宠物与聊天经局域网连接"
+                   FontSize="11" TextColor="{StaticResource QpBrownText}"
+                   HorizontalOptions="Center" Margin="0,18,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

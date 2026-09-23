@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能键鼠 管理器</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="window">
+  <div class="titlebar">
+    <span class="titlebar-title"><img src="ring.png" class="title-icon"> 智能键鼠</span>
+    <div class="titlebar-actions">
+      <button class="win-btn min" onclick="window.electronAPI.minimize()">
+        <svg viewBox="0 0 10 10"><rect y="4" width="10" height="1.5" rx=".5"/></svg>
+      </button>
+      <button class="win-btn max" onclick="window.electronAPI.maximize()">
+        <svg viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+      <button class="win-btn close" onclick="window.electronAPI.close()">
+        <svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+    <div class="srv-card" id="srvCard">
+      <div class="srv-ring on" id="srvRing">▶</div>
+      <div class="srv-body">
+        <div class="srv-main" id="srvMain">检测中...</div>
+        <div class="srv-url" id="srvUrl" onclick="copyUrl()"></div>
+      </div>
+      <button class="srv-btn stop" id="srvBtn" onclick="toggleServer()">■ 停止</button>
+    </div>
+
+    <div class="qr-section" id="qrLanSection" style="display:none">
+      <div class="section-label">🏠 局域网</div>
+      <div class="qr-card">
+        <div id="qrLan"></div>
+        <div class="qr-text">
+          <div class="qr-url" id="qrLanUrl"></div>
+          <div class="qr-hint">📶 同一 WiFi / 局域网下使用，延迟低</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">☁️ Cloudflare</div>
+    <div id="tunnelList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/qrcode.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

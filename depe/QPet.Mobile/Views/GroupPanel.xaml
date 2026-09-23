@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.GroupPanel">
+
+    <!-- 群聊页签内容:2×2 动作行(创建/搜索/群申请/群邀请)+ 群列表(行进群详情) -->
+    <Grid RowDefinitions="Auto,*" Padding="12,6">
+
+        <!-- 顶部动作:＋ 创建(主色)/ 🔍 搜索 / 📮 群申请 ● / 📮 群邀请 ● -->
+        <Border Grid.Row="0" Style="{StaticResource QpCard}" Padding="12,10" Margin="0,0,0,10">
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="8" ColumnSpacing="8">
+                <Button Grid.Row="0" Grid.Column="0" Text="＋ 创建" Clicked="OnCreateClicked"
+                        FontSize="12" HeightRequest="36" CornerRadius="12"
+                        BackgroundColor="#FF8C42" TextColor="White" />
+                <Button Grid.Row="0" Grid.Column="1" Text="🔍 搜索" Clicked="OnSearchClicked"
+                        Style="{StaticResource QpSecondaryBtn}" />
+                <!-- 群申请:有未处理显 ● -->
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Button Text="📮 群申请" Clicked="OnApplyClicked"
+                            Style="{StaticResource QpSecondaryBtn}" />
+                    <Ellipse x:Name="ApplyDot" WidthRequest="9" HeightRequest="9"
+                             Fill="{StaticResource QpError}" Stroke="White" StrokeThickness="2"
+                             HorizontalOptions="End" VerticalOptions="Start"
+                             IsVisible="False" Margin="0,-1,-1,0" />
+                </Grid>
+                <!-- 群邀请:有未处理显 ● -->
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Button Text="📮 群邀请" Clicked="OnInviteClicked"
+                            Style="{StaticResource QpSecondaryBtn}" />
+                    <Ellipse x:Name="InviteDot" WidthRequest="9" HeightRequest="9"
+                             Fill="{StaticResource QpError}" Stroke="White" StrokeThickness="2"
+                             HorizontalOptions="End" VerticalOptions="Start"
+                             IsVisible="False" Margin="0,-1,-1,0" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 群列表:白卡片内,👥 绿块头像 + 群名(备注优先)+ 群号人数 -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Padding="6,4">
+            <CollectionView x:Name="GroupList" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="0,36" Spacing="6" HorizontalOptions="Center">
+                        <Label Text="👥" FontSize="30" HorizontalTextAlignment="Center" />
+                        <Label Text="还没有群聊" FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource QpBrown}" HorizontalTextAlignment="Center" />
+                        <Label Text="点击上方「＋ 创建」建一个" FontSize="11"
+                               TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!-- 行点击 → 群详情页(群号路由参数) -->
+                        <Grid Padding="8,9" ColumnDefinitions="Auto,*,Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnGroupTapped" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Border WidthRequest="42" HeightRequest="42" StrokeShape="RoundRectangle 21"
+                                    BackgroundColor="{Binding AvatarBg}" VerticalOptions="Center" Margin="0,0,10,0">
+                                <Label Text="👥" FontSize="17"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold"
+                                       TextColor="{StaticResource QpText}" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding Sub}" FontSize="11" TextColor="{StaticResource QpBrown}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="18" TextColor="{StaticResource QpBrownText}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+    </Grid>
+
+</ContentView>

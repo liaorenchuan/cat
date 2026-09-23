@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.ConvPanel">
+
+    <!-- 消息页签内容(对齐桌面 ChatView 消息页):连接横幅 + 我的资料卡 + 会话列表(左滑关闭) -->
+    <Grid RowDefinitions="Auto,Auto,*" Padding="12,6">
+
+        <!-- 连接横幅:断线提示重连;离线登录模式提示仅缓存(桌面 ShowOfflineBanner 同文案) -->
+        <Border x:Name="ConnBanner" Grid.Row="0" IsVisible="False"
+                BackgroundColor="#FFF3E0" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                StrokeShape="RoundRectangle 8" Padding="10,6" Margin="0,0,0,8">
+            <Label x:Name="ConnText" Text="" FontSize="11" LineBreakMode="WordWrap" />
+        </Border>
+
+        <!-- 我的资料卡:点击展开 改昵称 / 退出登录 两枚操作按钮 -->
+        <Border Grid.Row="1" BackgroundColor="#FFF8EF" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                StrokeShape="RoundRectangle 12" Padding="10,8" Margin="0,0,0,10">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnProfileTapped" />
+            </Border.GestureRecognizers>
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto">
+                <Grid WidthRequest="42" HeightRequest="42">
+                    <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                            BackgroundColor="{StaticResource QpSurfacePressed}">
+                        <Label x:Name="MyAvatarChar" Text="" FontSize="17" FontAttributes="Bold"
+                               TextColor="{StaticResource QpTitle}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <!-- 我的状态点:绿=连接,灰=断开/离线模式 -->
+                    <Ellipse x:Name="MyStatusDot" WidthRequest="10" HeightRequest="10"
+                             Fill="{StaticResource QpGreen}" Stroke="White" StrokeThickness="2"
+                             HorizontalOptions="End" VerticalOptions="End" />
+                </Grid>
+                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center" Margin="10,0,0,0">
+                    <Label x:Name="MyNickText" Text="" FontSize="15" FontAttributes="Bold"
+                           TextColor="{StaticResource QpText}" />
+                    <Label x:Name="MyAccountText" Text="" FontSize="11" TextColor="{StaticResource QpBrown}" />
+                </VerticalStackLayout>
+                <Label x:Name="MoreMark" Grid.Column="2" Text="›" FontSize="18" TextColor="{StaticResource QpBrownText}"
+                       VerticalOptions="Center" />
+
+                <!-- 展开操作区:改昵称(浅橙底)/ 退出登录(淡红底);再次点资料卡收起 -->
+                <Grid x:Name="MenuArea" Grid.Row="1" Grid.ColumnSpan="3" IsVisible="False"
+                      ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,9,0,0">
+                    <BoxView Grid.ColumnSpan="2" HeightRequest="1" Color="{StaticResource QpDividerLine}"
+                             VerticalOptions="Start" Margin="0,0,0,8" />
+                    <Button Text="改昵称" Clicked="OnRenameClicked" FontSize="12" HeightRequest="34" CornerRadius="10"
+                            BackgroundColor="{StaticResource QpOrangePale}"
+                            TextColor="{StaticResource QpTitle}" />
+                    <Button Grid.Column="1" Text="退出登录" Clicked="OnLogoutClicked" FontSize="12" HeightRequest="34"
+                            CornerRadius="10" BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 会话列表:白卡片内,行点击进聊天页,左滑「关闭」本地隐藏会话 -->
+        <Border Grid.Row="2" Style="{StaticResource QpCard}" Padding="6,4">
+            <CollectionView x:Name="ConvList" SelectionMode="None" Margin="0">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="0,44" Spacing="6" HorizontalOptions="Center">
+                        <Label Text="💬" FontSize="30" HorizontalTextAlignment="Center" />
+                        <Label Text="暂无会话" FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource QpBrown}" HorizontalTextAlignment="Center" />
+                        <Label Text="去好友/群聊页找人聊聊吧" FontSize="11"
+                               TextColor="{StaticResource QpBrownText}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!-- 左滑露出「关闭」→ 本地隐藏该会话;右侧按钮点击不冒泡进聊天 -->
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Reveal">
+                                    <SwipeItemView>
+                                        <Grid WidthRequest="74" BackgroundColor="{StaticResource QpError}">
+                                            <Label Text="关闭" FontSize="12" TextColor="White"
+                                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnCloseSwipe"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </SwipeItemView>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Grid Padding="8,9" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto">
+                                <!-- 行点击 → 打开聊天页(会话标题与是否群聊随路由参数) -->
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnConvTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+
+                                <!-- 头像:群=👥 绿底 / 好友=昵称首字色块;右下在线点仅好友会话(绿/灰) -->
+                                <Grid Grid.RowSpan="2" WidthRequest="42" HeightRequest="42"
+                                      VerticalOptions="Center" Margin="0,0,10,0">
+                                    <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                                            BackgroundColor="{Binding AvatarBg}">
+                                        <Label Text="{Binding AvatarText}" FontSize="16" FontAttributes="Bold"
+                                               TextColor="{StaticResource QpBrown}"
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                    <Ellipse WidthRequest="10" HeightRequest="10" Fill="{Binding OnlineBrush}"
+                                             Stroke="White" StrokeThickness="2"
+                                             HorizontalOptions="End" VerticalOptions="End"
+                                             IsVisible="{Binding ShowOnlineDot}" />
+                                </Grid>
+
+                                <Label Grid.Column="1" Text="{Binding Title}" FontSize="14"
+                                       FontAttributes="Bold" TextColor="{StaticResource QpText}"
+                                       LineBreakMode="TailTruncation" VerticalOptions="Center" />
+                                <Label Grid.Column="2" Text="{Binding TimeText}" FontSize="10"
+                                       TextColor="{StaticResource QpBrownText}" Margin="8,0,0,0"
+                                       VerticalOptions="Center" />
+
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Preview}" FontSize="11"
+                                       TextColor="{StaticResource QpBrown}" LineBreakMode="TailTruncation"
+                                       Margin="0,3,0,0" VerticalOptions="Center" />
+                                <Border Grid.Row="1" Grid.Column="2"
+                                        BackgroundColor="{StaticResource QpError}" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 9" Padding="5,0"
+                                        MinimumWidthRequest="18" MinimumHeightRequest="18"
+                                        HorizontalOptions="End" VerticalOptions="Center"
+                                        IsVisible="{Binding HasUnread}">
+                                    <Label Text="{Binding UnreadText}" FontSize="10" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <!-- 改昵称输入弹层(资料卡改昵称按钮) -->
+        <Grid x:Name="Overlay" Grid.RowSpan="3" IsVisible="False">
+            <BoxView Color="#000000" Opacity="0.25">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOverlayDimTapped" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <controls:PromptCard x:Name="PromptUi" IsVisible="False"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 ConfirmRequested="OnPromptAccepted" CancelRequested="OnPromptCanceled" />
+        </Grid>
+    </Grid>
+
+</ContentView>

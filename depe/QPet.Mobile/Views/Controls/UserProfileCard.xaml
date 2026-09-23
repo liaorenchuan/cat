@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.Controls.UserProfileCard">
+    <!-- 用户主页卡:点头像弹出。头像/昵称/账号/状态 + (已是好友/添加好友/这是你自己) -->
+    <Border WidthRequest="300" Padding="26,24" StrokeShape="RoundRectangle 18"
+            BackgroundColor="White" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1">
+        <VerticalStackLayout Spacing="8">
+            <!-- 大头像 -->
+            <Border x:Name="AvatarBg" WidthRequest="72" HeightRequest="72"
+                    StrokeShape="RoundRectangle 36" HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource QpOrangePale}">
+                <Label x:Name="AvatarCharLabel" FontSize="30" FontAttributes="Bold"
+                       TextColor="{StaticResource QpTitle}"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Label x:Name="NickLabel" FontSize="18" FontAttributes="Bold"
+                   TextColor="{StaticResource QpText}" HorizontalTextAlignment="Center" />
+            <Label x:Name="AccountLabel" FontSize="12" TextColor="{StaticResource QpBrownText}"
+                   HorizontalTextAlignment="Center" />
+            <!-- 状态行:● 在线/离线;是自己是"这是你自己";好友是绿字"已经是好友" -->
+            <Label x:Name="StatusLabel" FontSize="12" FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" Margin="0,2,0,0" />
+            <Grid x:Name="ActionRow" Margin="0,10,0,0" HorizontalOptions="Center">
+                <Button x:Name="AddButton" Text="＋ 添加好友" HeightRequest="36" WidthRequest="150"
+                        FontSize="14" Style="{StaticResource QpActionBtn}" Clicked="OnAddClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

@@ -1,0 +1,31 @@
+<Window x:Class="QPet.Wpf.Dialogs.CreateGroupDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="创建群聊" Width="380" Height="460"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        ShowInTaskbar="False" Background="{StaticResource UiDialogBg}">
+
+    <DockPanel Margin="16">
+        <!-- 群名 -->
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,14">
+            <Button DockPanel.Dock="Right" Style="{StaticResource PrimaryButton}" Content="创建"
+                    Width="72" Margin="8,0,0,0" Click="OnCreate" />
+            <StackPanel>
+                <TextBlock Text="群名称" FontSize="12" Foreground="{StaticResource UiDeepBrown}" Margin="0,0,0,4" />
+                <TextBox x:Name="NameBox" Height="32" FontSize="13" Padding="6,4"
+                         VerticalContentAlignment="Center" KeyDown="OnNameKeyDown" />
+            </StackPanel>
+        </DockPanel>
+
+        <TextBlock DockPanel.Dock="Top" Text="选择好友入群" FontSize="12" Foreground="{StaticResource UiDeepBrown}"
+                   Margin="0,0,0,8" />
+
+        <!-- 好友多选 -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,0,8">
+            <StackPanel x:Name="FriendPanel" />
+        </ScrollViewer>
+
+        <TextBlock x:Name="ErrorText" DockPanel.Dock="Bottom" FontSize="11" Foreground="{StaticResource WarmError}"
+                   TextWrapping="Wrap" Visibility="Collapsed" />
+    </DockPanel>
+</Window>

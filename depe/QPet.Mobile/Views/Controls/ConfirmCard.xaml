@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QPet.Mobile.Views.Controls.ConfirmCard"
+             x:Name="Self">
+    <!-- 确认卡(删除好友/退出群聊等二次确认):页面 overlay 居中展示,遮罩点击由页面处理 -->
+    <Border WidthRequest="300" Padding="22,20" StrokeShape="RoundRectangle 16"
+            BackgroundColor="White" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1">
+        <VerticalStackLayout Spacing="12">
+            <Label x:Name="TitleLabel" FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource QpText}" HorizontalTextAlignment="Center" />
+            <Label x:Name="MessageLabel" FontSize="13" TextColor="{StaticResource QpBrown}"
+                   HorizontalTextAlignment="Center" LineBreakMode="WordWrap" LineHeight="1.4" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,8,0,0">
+                <Button Grid.Column="0" Text="取消" HeightRequest="38"
+                        Style="{StaticResource QpSecondaryBtn}" Clicked="OnCancelClicked" />
+                <Button Grid.Column="1" x:Name="ConfirmButton" Text="确认" HeightRequest="38"
+                        Style="{StaticResource QpActionBtn}" Clicked="OnConfirmClicked">
+                    <!-- 危险动作(删除/退出)确认按钮转红 -->
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsDanger, Source={x:Reference Self}}"
+                                     Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource QpError}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

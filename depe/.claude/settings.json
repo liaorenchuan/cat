@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Copy-Item * $env:USERPROFILE\\Desktop\\*)"
+    ]
+  }
+}

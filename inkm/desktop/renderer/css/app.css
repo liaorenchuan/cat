@@ -1,0 +1,187 @@
+/* Inkm Desktop — Win11 风格管理器样式 */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"Segoe UI Variable","Segoe UI",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  overflow:hidden;user-select:none;height:100vh;background:transparent;
+}
+.window{
+  height:100vh;background:#f2f2f2;border-radius:8px;display:flex;flex-direction:column;
+  overflow:hidden;border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 2px 8px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.12);
+}
+@media(prefers-color-scheme:dark){
+  .window{background:#2c2c2c;border-color:rgba(255,255,255,.06)}
+}
+.titlebar{
+  -webkit-app-region:drag;display:flex;align-items:center;height:32px;
+  padding:0 0 0 16px;flex-shrink:0;
+}
+.titlebar-title{font-size:12px;font-weight:500;color:#1a1a1a;display:flex;align-items:center;gap:6px}
+.title-icon{width:14px;height:14px;vertical-align:middle}
+@media(prefers-color-scheme:dark){.titlebar-title{color:#e0e0e0}}
+.titlebar-actions{-webkit-app-region:no-drag;display:flex;margin-left:auto;height:100%}
+.win-btn{
+  width:46px;height:100%;border:none;background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .1s;color:#5a5a5a;
+}
+.win-btn svg{fill:currentColor;width:10px;height:10px}
+.win-btn:hover{background:rgba(0,0,0,.06)}
+.win-btn.close:hover{background:#e81123;color:#fff}
+@media(prefers-color-scheme:dark){.win-btn{color:#9d9d9d}}
+
+.content{flex:1;padding:16px 16px 8px;overflow-y:auto;scrollbar-width:thin}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:#c0c0c0;border-radius:4px}
+
+/* 服务状态 */
+.srv-card{
+  background:rgba(255,255,255,.6);border-radius:10px;padding:14px 16px;margin-bottom:14px;
+  border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:12px;
+}
+@media(prefers-color-scheme:dark){
+  .srv-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.04)}
+}
+.srv-ring{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .3s;
+}
+.srv-ring.on{background:rgba(16,185,129,.12);color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.2)}
+.srv-ring.off{background:rgba(239,68,68,.1);color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+.srv-ring.connecting{background:rgba(245,158,11,.12);color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2);animation:pulse .8s ease-in-out infinite}
+.srv-body{flex:1;min-width:0}
+.srv-main{font-size:15px;font-weight:600;color:#1a1a1a}
+.srv-url{font-size:11px;color:#888;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.srv-url:hover{color:#005fb8}
+@media(prefers-color-scheme:dark){
+  .srv-main{color:#e0e0e0}.srv-url{color:#666}
+}
+
+/* 服务按钮 */
+.srv-btn{
+  padding:7px 18px;border:none;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.srv-btn:active{transform:scale(.96)}
+.srv-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.srv-btn.stop{background:#ef4444;color:#fff}
+.srv-btn.stop:hover:not(:disabled){background:#dc2626}
+.srv-btn.start{background:#10b981;color:#fff}
+.srv-btn.start:hover:not(:disabled){background:#059669}
+.srv-btn.connecting{background:#f59e0b;color:#fff;cursor:wait}
+.srv-btn.connecting:hover:not(:disabled){background:#d97706}
+
+/* 外网通道 */
+.section-label{font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px 4px}
+@media(prefers-color-scheme:dark){.section-label{color:#666}}
+
+.ch-card{
+  display:flex;flex-direction:column;gap:6px;padding:10px 12px;margin-bottom:5px;
+  background:rgba(255,255,255,.5);border-radius:8px;
+  border:1px solid rgba(0,0,0,.04);transition:all .15s;
+}
+.ch-card .ch-top{display:flex;align-items:center;gap:10px;width:100%}
+.ch-card:hover{background:rgba(255,255,255,.75)}
+@media(prefers-color-scheme:dark){
+  .ch-card{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.04)}
+  .ch-card:hover{background:rgba(255,255,255,.06)}
+}
+.ch-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.ch-dot.on{background:#10b981;box-shadow:0 0 4px rgba(16,185,129,.4)}
+.ch-dot.off{background:#bbb}
+.ch-dot.connecting{background:#f59e0b;animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ch-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ch-body{flex:1;min-width:0}
+.ch-name{font-size:12px;font-weight:600;color:#333}
+@media(prefers-color-scheme:dark){.ch-name{color:#ccc}}
+.ch-url{
+  font-size:11px;color:#888;margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;
+}
+.ch-url:hover{color:#005fb8}
+@media(prefers-color-scheme:dark){.ch-url:hover{color:#60cdff}}
+.ch-btn{
+  padding:4px 10px;border:1px solid rgba(0,0,0,.08);border-radius:5px;
+  background:rgba(255,255,255,.5);cursor:pointer;font-size:11px;color:#555;
+  transition:all .15s;flex-shrink:0;
+}
+.ch-btn:hover{background:#005fb8;color:#fff;border-color:#005fb8}
+.ch-btn:active{transform:scale(.96)}
+.ch-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+@media(prefers-color-scheme:dark){
+  .ch-btn{color:#aaa;background:rgba(255,255,255,.04)}
+  .ch-btn:hover{background:#60cdff;color:#1a1a1a}
+}
+
+/* 通道状态标注 */
+.ch-state{font-size:11px;margin-top:1px;font-weight:500;transition:color .2s}
+.ch-state.ch-online{color:#10b981}
+.ch-state.ch-connecting{color:#f59e0b}
+.ch-state.ch-offline{color:#888}
+.ch-state.ch-retry{color:#e88d0a}
+.ch-err{font-size:10px;color:#ef4444;margin-top:2px;background:rgba(239,68,68,.06);padding:2px 6px;border-radius:4px;display:inline-block;line-height:1.4}
+.ch-actions{display:flex;gap:4px;flex-shrink:0;margin-left:auto;align-items:center}
+.ch-btn-connect{background:rgba(16,185,129,.08);color:#10b981;border-color:rgba(16,185,129,.2)}
+.ch-btn-connect:hover:not(:disabled){background:#10b981;color:#fff;border-color:#10b981}
+.ch-btn-disconnect{background:rgba(239,68,68,.08);color:#ef4444;border-color:rgba(239,68,68,.2)}
+.ch-btn-disconnect:hover:not(:disabled){background:#ef4444;color:#fff;border-color:#ef4444}
+
+.toast{
+  position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1a1a1a;color:#fff;padding:8px 20px;border-radius:6px;font-size:12px;
+  opacity:0;transition:all .3s;pointer-events:none;z-index:100;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(prefers-color-scheme:dark){.toast{background:#e0e0e0;color:#1a1a1a}}
+
+/* QR 码 — 局域网独立区块 */
+.qr-section{margin-bottom:14px}
+.qr-card{
+  background:rgba(255,255,255,.6);border-radius:10px;padding:10px 12px;
+  border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;gap:10px;
+}
+@media(prefers-color-scheme:dark){
+  .qr-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.04)}
+}
+#qrLan{flex-shrink:0;overflow:hidden;background:#fff;width:100px;height:100px}
+#qrLan img,#qrLan canvas{display:block}
+.qr-text{flex:1;min-width:0}
+.qr-url{font-size:11px;font-weight:600;color:#1a1a1a;word-break:break-all;line-height:1.3}
+.qr-hint{font-size:10px;color:#888;margin-top:3px;line-height:1.3}
+@media(prefers-color-scheme:dark){
+  .qr-url{color:#e0e0e0}.qr-hint{color:#666}
+}
+/* 隧道内嵌二维码 */
+.tunnel-qr-row{
+  display:flex;align-items:center;gap:10px;
+  margin-top:8px;padding-top:8px;
+  border-top:1px solid rgba(0,0,0,.06);
+}
+@media(prefers-color-scheme:dark){.tunnel-qr-row{border-color:rgba(255,255,255,.06)}}
+#qrTunnel{flex-shrink:0;overflow:hidden;background:#fff;width:100px;height:100px}
+#qrTunnel img,#qrTunnel canvas{display:block}
+.tunnel-qr-text{flex:1;min-width:0}
+.tunnel-qr-url{font-size:11px;font-weight:600;color:#1a1a1a;word-break:break-all;line-height:1.3}
+.tunnel-qr-hint{font-size:10px;color:#888;margin-top:2px}
+@media(prefers-color-scheme:dark){
+  .tunnel-qr-url{color:#e0e0e0}.tunnel-qr-hint{color:#666}
+}
+
+/* 防火墙警告 */
+.fw-warning{
+  background:rgba(245,158,11,.1);color:#b45309;font-size:12px;
+  padding:10px 14px;border-radius:8px;margin-bottom:14px;
+  border:1px solid rgba(245,158,11,.2);line-height:1.5;
+  display:none;
+}
+.fw-warning code{
+  background:rgba(0,0,0,.06);padding:3px 8px;border-radius:4px;
+  cursor:pointer;user-select:all;word-break:break-all;
+  font-size:11px;font-family:Consolas,monospace;
+}
+.fw-warning code:hover{background:rgba(0,0,0,.12)}
+@media(prefers-color-scheme:dark){
+  .fw-warning{color:#fbbf24;background:rgba(245,158,11,.08)}
+  .fw-warning code{background:rgba(255,255,255,.06)}
+  .fw-warning code:hover{background:rgba(255,255,255,.12)}
+}

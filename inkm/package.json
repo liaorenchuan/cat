@@ -1,0 +1,16 @@
+{
+  "name": "inkm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "📱 智能键鼠 — 手机当电脑的键盘、鼠标、触控板，局域网+外网双通道",
+  "scripts": {
+    "start": "node server/index.js",
+    "desktop": "cd desktop && npm start",
+    "channel": "node server/src/channel-manager.js",
+    "tunnel": "node server/src/tunnel-manager.js",
+    "tunnel:connect": "node server/src/tunnel-manager.js connect",
+    "tunnel:disconnect": "node server/src/tunnel-manager.js disconnect"
+  },
+  "keywords": ["inkm", "智能键鼠", "remote-control", "touchpad"],
+  "license": "MIT"
+}

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:QPet.Mobile.Views.Controls"
+             x:Class="QPet.Mobile.Views.MembersPage"
+             BackgroundColor="#FFFDF9"
+             Shell.NavBarIsVisible="False">
+
+    <!-- 群成员页(对齐桌面 MembersDialog):壳页签头 + 成员列表 + 底部拉好友进群 -->
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <controls:SheetHeader x:Name="Sheet" CloseRequested="OnCloseClicked" />
+
+        <!-- 成员列表:昵称 + 角色徽 我/群主/管理/好友;陌生人行尾"加好友" -->
+        <Border Grid.Row="1" Style="{StaticResource QpCard}" Padding="6,4" Margin="12,10,12,8">
+            <CollectionView x:Name="MemberList" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8,9" ColumnDefinitions="Auto,*,Auto">
+                            <!-- 头像 + 在线点 -->
+                            <Grid Grid.Column="0" WidthRequest="42" HeightRequest="42"
+                                  VerticalOptions="Center" Margin="0,0,10,0">
+                                <Border WidthRequest="38" HeightRequest="38"
+                                        StrokeShape="RoundRectangle 19" BackgroundColor="{Binding AvatarBg}">
+                                    <Label Text="{Binding AvatarChar}" FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpBrown}"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Ellipse WidthRequest="10" HeightRequest="10" Fill="{Binding OnlineBrush}"
+                                         Stroke="White" StrokeThickness="2"
+                                         HorizontalOptions="End" VerticalOptions="End" />
+                            </Grid>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding Nick}" FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource QpText}" VerticalOptions="Center" />
+                                    <!-- 角色徽:我/群主/管理/好友 -->
+                                    <Border BackgroundColor="{Binding RoleBg}" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8" Padding="5,1"
+                                            IsVisible="{Binding HasRole}" VerticalOptions="Center">
+                                        <Label Text="{Binding RoleTag}" FontSize="9"
+                                               TextColor="{StaticResource QpTitle}"
+                                               VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding Sub}" FontSize="11" TextColor="{StaticResource QpBrown}"
+                                       LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                            <!-- 行尾操作:＋ 好友(非我非好友);设为/取消管理(仅群主);🚫 移出(群主/管理员按权限) -->
+                            <HorizontalStackLayout Grid.Column="2" Spacing="4" VerticalOptions="Center">
+                                <Button Text="{Binding AddText}" IsVisible="{Binding ShowAdd}"
+                                        IsEnabled="{Binding AddEnabled}" Clicked="OnAddClicked" FontSize="10"
+                                        HeightRequest="26" Padding="9,0" CornerRadius="13"
+                                        BackgroundColor="{StaticResource QpOrangePale}"
+                                        TextColor="{StaticResource QpTitle}" />
+                                <Button Text="{Binding AdminBtnText}" IsVisible="{Binding ShowAdminBtn}"
+                                        Clicked="OnToggleAdminClicked" FontSize="10"
+                                        HeightRequest="26" Padding="9,0" CornerRadius="13"
+                                        Style="{StaticResource QpSecondaryBtn}" />
+                                <Button Text="🚫 移出" IsVisible="{Binding ShowKick}"
+                                        Clicked="OnKickClicked" FontSize="10"
+                                        HeightRequest="26" Padding="9,0" CornerRadius="13"
+                                        BackgroundColor="#FCE8E2" TextColor="{StaticResource QpError}" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <!-- 拉好友进群(对齐桌面 MembersDialog 底部面板):我的好友 - 已在群内的,行尾「拉入」发邀请,对方同意才进群 -->
+        <Border Grid.Row="2" Margin="12,0,12,12" Padding="10,9"
+                BackgroundColor="#FFF6EA" Stroke="{StaticResource QpCardBorder}" StrokeThickness="1"
+                StrokeShape="RoundRectangle 12">
+            <Grid RowDefinitions="Auto,Auto,Auto">
+                <Grid ColumnDefinitions="*,Auto" Margin="2,0,2,6">
+                    <Label Text="＋ 拉好友进群" FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource QpText}" />
+                    <Label x:Name="InviteCount" Grid.Column="1" FontSize="10"
+                           TextColor="{StaticResource QpBrown}" />
+                </Grid>
+                <!-- 邀请结果提示(桌面 InviteHintText 位):已发出邀请 / 失败原因,平时隐藏 -->
+                <Label x:Name="InviteTip" Grid.Row="1" FontSize="10"
+                       TextColor="{StaticResource QpBrown}" Margin="2,0,2,4" IsVisible="False" />
+                <!-- 可拉好友列表:行高紧凑,超出高度内部滚动 -->
+                <CollectionView x:Name="InviteList" Grid.Row="2" HeightRequest="118"
+                                SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Spacing="4" VerticalOptions="Center" Padding="0,10">
+                            <Label x:Name="InviteEmptyText" Text="没有可拉入的好友"
+                                   FontSize="11" TextColor="{StaticResource QpBrownText}"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,3" ColumnDefinitions="Auto,*,Auto">
+                                <Border WidthRequest="26" HeightRequest="26" StrokeShape="RoundRectangle 13"
+                                        BackgroundColor="{Binding AvatarBg}" VerticalOptions="Center">
+                                    <Label Text="{Binding AvatarChar}" FontSize="10"
+                                           TextColor="{StaticResource QpBrown}"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Grid.Column="1" Text="{Binding Title}" FontSize="13"
+                                       TextColor="{StaticResource QpText}" LineBreakMode="TailTruncation"
+                                       Margin="8,0,0,0" VerticalOptions="Center" />
+                                <!-- 拉入:发邀请,对方同意后 groupUpdated 推送刷新成员列表(桌面邀请制) -->
+                                <Button Grid.Column="2" Text="拉入" Clicked="OnInviteClicked"
+                                        IsEnabled="{Binding BtnEnabled}" FontSize="11"
+                                        HeightRequest="26" Padding="12,0" CornerRadius="13"
+                                        BackgroundColor="#FF8C42" TextColor="White"
+                                        VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+
+        <!-- 弹层:移出成员确认卡 -->
+        <Grid x:Name="Overlay" Grid.RowSpan="3" IsVisible="False">
+            <BoxView Color="#000000" Opacity="0.25">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOverlayDimTapped" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <controls:ConfirmCard x:Name="ConfirmUi" IsVisible="False"
+                                      ConfirmRequested="OnConfirmAccepted" CancelRequested="OnOverlayCanceled" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
+</ContentPage>
